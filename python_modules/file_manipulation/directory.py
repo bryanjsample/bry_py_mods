@@ -19,7 +19,7 @@ class Directory():
                 target_file = directory.choose_file()
                 # do what you want with this file
     '''
-    def __init__(self, target_extension:bool | str=False) -> None:
+    def __init__(self, target_extension:str|list=False) -> None:
         '''
             Attributes:
                 self.path: absolute path to the current working directory
@@ -36,7 +36,7 @@ class Directory():
             print(f'\nSearching for all files inside of {self.path}...')
         self.target_extension = target_extension
         self.changed_directory = False 
-        self.files = self.parse_directory() # set attribute inside of function to prevent recursive issues
+        self.files = self.parse_directory()
         if len(self.files) > 1:
             self.file_dict = self.form_file_dict()
 
@@ -78,15 +78,22 @@ class Directory():
 
     def list_files(self) -> list:
         '''Forms a list of target files and returns the list.'''
-        if self.target_extension:
-            file_list = [x for x in os.listdir(self.path) if self.target_extension in x.split('.')[-1]] # list of files in cwd if extension == target extenstion
-        else:
+        if self.target_extension: # if parameter is provided
+            if type(self.target_extension) is list: # if a list of extensions is provided
+                file_list = []
+                for extension in self.target_extension:
+                    file_list.extend([x for x in os.listdir(self.path) if extension in x.split('.')[-1]])
+            else: # if only one extension is provided
+                file_list = [x for x in os.listdir(self.path) if self.target_extension in x.split('.')[-1]] # list of files in cwd if extension == target extenstion
+        else: # if no parameter is provided 
             file_list = os.listdir(self.path)
             print('\nPress enter to list only visible files or any other key to list all files...')
             key = getch.getch()
             if key == '\n':
                 file_list = [x for x in file_list if x[0] != '.']
         return file_list
+    
+    
 
     def reset_directory_attributes(self, new_path:str) -> list:
         '''If a new path is provided, then reset self.path and extract new target files'''
