@@ -33,6 +33,7 @@ class MarkdownFile(Directory):
     def open_pdf_file(self, new_name):
         self.add_pdf_to_path(new_name)
         subprocess.run(['open', self.path])
+        os.system('clear')
 
     def change_target_extension(self):
         '''Change file extension from '.md' to '.pdf'.'''

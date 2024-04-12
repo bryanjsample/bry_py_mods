@@ -28,6 +28,7 @@ class Directory():
                 self.files: list containing files targeted
                 self.file_dict: dictionary to select one file from many, only needed if there is > 1 file
         '''
+        os.system('clear')
         self.path = os.getcwd()
         if target_extension:
             print(f'\nSearching for {target_extension} files inside of {self.path}...')
@@ -141,7 +142,7 @@ class Directory():
                     if selection not in acceptable_numbers:
                         self.get_key_press('\nNot an acceptable value. Press enter to retry or any other key to quit...')
                     else:
-                        return selection
+                        return self.file_dict[selection]
                 except:
                     self.get_key_press('\nNot an acceptable value. Press enter to retry or any other key to quit...')
         else:
