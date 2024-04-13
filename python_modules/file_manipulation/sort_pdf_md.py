@@ -1,4 +1,3 @@
-from directory import Directory
 from target_files import TargetFiles
 
 def main():
