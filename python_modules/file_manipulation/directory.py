@@ -82,9 +82,9 @@ class Directory():
             if type(self.target_extension) is list: # if a list of extensions is provided
                 file_list = []
                 for extension in self.target_extension:
-                    file_list.extend([x for x in os.listdir(self.path) if extension in x.split('.')[-1]])
+                    file_list.extend([x for x in os.listdir(self.path) if extension == x.split('.')[-1]])
             else: # if only one extension is provided
-                file_list = [x for x in os.listdir(self.path) if self.target_extension in x.split('.')[-1]] # list of files in cwd if extension == target extenstion
+                file_list = [x for x in os.listdir(self.path) if self.target_extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
         else: # if no parameter is provided 
             file_list = os.listdir(self.path)
             print('\nPress enter to list only visible files or any other key to list all files...')
@@ -157,7 +157,6 @@ class Directory():
 
 def main():
     target_dir = Directory()
-    target_file = target_dir.choose_file()
 
 if __name__ == "__main__":
     main()
