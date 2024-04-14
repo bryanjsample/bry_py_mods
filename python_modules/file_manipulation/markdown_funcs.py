@@ -79,9 +79,7 @@ class MarkdownFile():
         return f'File Name : {self.Target_Name}\nParent directory : {self.Parent_Directory}'
 
     def confirm_conversion(self) -> str:
-        '''
-            Confirm with enter key before converting.
-        '''
+        '''Confirm with enter key before converting.'''
         conversion_string = f'Attempting to convert {self.Target_Name}  ---->  {self.Destination_Name}...'
         print('\n\n', conversion_string)
         get_key_press(message=f'\nPress enter to convert or any other key to terminate...')
@@ -95,9 +93,7 @@ class MarkdownFile():
         os.system('clear')
 
     def convert_md_to_pdf(self, converted_files:dict) -> None:
-        '''
-            Convert target markdown file to a pdf of the same name.
-        '''
+        '''Convert target markdown file to a pdf of the same name.'''
         os.system('clear')
         conversion_string = self.confirm_conversion()
         os.system('clear')
@@ -121,9 +117,7 @@ class MarkdownFiles(Directory):
         from directory.py's Directory class.
     '''
     def __init__(self, target_extension:str|List[str]=False):
-        '''
-            Inherit attributes and obtain list of target markdown file objects.
-        '''
+        '''Inherit attributes and obtain list of target markdown file objects.'''
         Directory.__init__(self, target_extension)
         self.__target_files:List[MarkdownFile] = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
 
@@ -142,9 +136,7 @@ class MarkdownFiles(Directory):
         return f'Markdown Files : {', '.join(self.Target_Files)}\nParent Directory : {self.Directory_Path}'
 
     def finished_converting(self) -> None:
-        '''
-            Once finished converting, print all files that successfully converted
-        '''
+        '''Once finished converting, print all files that successfully converted'''
         if len(self.converted_files.keys()) == 0:
             print('\nNo md were converted.\n')
         else:

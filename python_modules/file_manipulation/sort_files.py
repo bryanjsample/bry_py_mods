@@ -19,9 +19,7 @@ class Sorter(Directory):
         Directory.__init__(self, target_extension)
 
     def sort_files(self) -> None:
-        '''
-            Move files into their respective sub-directories
-        '''
+        '''Move files into their respective sub-directories'''
         destination = self.destination_path()
         if self.directory_does_not_exist():
             os.mkdir(destination)
@@ -31,9 +29,7 @@ class Sorter(Directory):
         sleep(1)
 
     def directory_does_not_exist(self) -> bool:
-        '''
-            If directories exist, great! If not, make them.
-        '''
+        '''If directories exist, great! If not, make them.'''
         cwd_contents = os.listdir(self.Directory_Path)
         if f'{self.Target_Extension}_files' not in cwd_contents:
             return True
