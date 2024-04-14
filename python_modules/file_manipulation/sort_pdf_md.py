@@ -8,7 +8,7 @@ class TargetFiles(Directory):
     def __init__(self, target_extension:str|list=False) -> None:
         Directory.__init__(self, target_extension)
 
-    def move_files(self):
+    def sort_files(self):
         destination = self.destination_path()
         if self.directory_does_not_exist():
             os.mkdir(destination)
@@ -31,12 +31,12 @@ def main():
     pdfs = TargetFiles('pdf')
     destination = pdfs.destination_path()
     pdfs.get_key_press(f'\nPress enter to move files into {destination} or any other key to quit...\n')
-    pdfs.move_files()
+    pdfs.sort_files()
 
     mds = TargetFiles('md')
     destination = mds.destination_path()
     mds.get_key_press(f'\nPress enter to move files into {destination} or any other key to quit...\n')
-    mds.move_files()
+    mds.sort_files()
 
 if __name__ == "__main__":
     main()

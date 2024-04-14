@@ -92,8 +92,6 @@ class Directory():
             if key == '\n':
                 file_list = [x for x in file_list if x[0] != '.']
         return file_list
-    
-    
 
     def reset_directory_attributes(self, new_path:str) -> list:
         '''If a new path is provided, then reset self.path and extract new target files'''
@@ -139,7 +137,7 @@ class Directory():
                 count += 1
         return file_dict
 
-    def choose_file(self) -> str:
+    def choose_one_item(self) -> str:
         '''If there is only one file, return it. Otherwise, print formatted dictionary and allow the user to select the file.'''
         if len(self.files) > 1:
             acceptable_numbers = self.file_dict.keys()
@@ -154,9 +152,27 @@ class Directory():
                     self.get_key_press('\nNot an acceptable value. Press enter to retry or any other key to quit...')
         else:
             return self.files[0]
-
-def main():
-    target_dir = Directory()
-
-if __name__ == "__main__":
-    main()
+        
+    def choose_multiple_items(self) -> list | str:
+        '''If there is only one file, return it. Otherwise, print formatted dictionary and allow the user to select multiple files using a space seperated sequence.'''
+        if len(self.files) > 1:
+            acceptable_numbers = self.file_dict.keys()
+            while True:
+                try:
+                    selections = [x for x in input('\nEnter space seperated numbers to choose corresponding file: ').split(' ')]
+                    invalid_values = []
+                    valid_files = []
+                    for selection in selections:
+                        if int(selection) not in acceptable_numbers:
+                            invalid_values.append(selection)
+                        else:
+                            valid_files.append(self.file_dict[int(selection)])
+                    if len(invalid_values) > 0:
+                        self.get_key_press(f'{', '.join(invalid_values)} are not acceptable values. Press enter to retry or any other key to quit...')
+                    else:
+                        return valid_files
+                except ValueError:
+                    self.get_key_press('\nNot an acceptable list of values. Press enter to retry or any other key to quit...')
+                selections.clear()
+        else:
+            return self.files[0]
