@@ -1,5 +1,6 @@
 from directory import Directory
 import os
+from time import sleep
 
 class TargetFiles(Directory):
     def __init__(self, target_extension:str|list=False) -> None:
@@ -12,7 +13,8 @@ class TargetFiles(Directory):
             os.mkdir(self.destination)
         for file in self.files:
             os.rename(f'{self.path}/{file}', f'{self.destination}/{file}')
-        self.get_key_press(f'Moved all {self.target_extension} files. Press enter to continue or any other key to quit...\n')
+        print(f'Moved all {self.target_extension} files.\n')
+        sleep(1)
 
     def directory_does_not_exist(self):
         cwd_contents = os.listdir(self.path)
