@@ -1,32 +1,42 @@
 '''
-    Module to assist with selecting a single item from a directory.
+    Module to assist with selecting items from a directory.
     Import Directory class from this module and instantiate with an
     optional parameter {target_extension}. If provided, then only
     items with that extension will be listed. Otherwise, you can choose
     to show all items, including hidden items, or only non-hidden items.
+
+
 '''
 
 import os
 import getch
+from types import FunctionType
 
 class Directory():
     '''
-        Directory class, no parents.
-        
+        Directory Class to be inherited / manipulated
+
+        Properties
+            - self.Target_Extension: optional extension to search for in directory
+            - self.Directory_Path : string of the absolute path to the directory
+            - self.Changed_Directory: defaults to false, only changed to true if a new path is used
+            - self.Files: list containing files targeted
+            - self.File_Dict: dictionary to select one file from many, only needed if there is > 1 file
+
         Example Instantiation:
-            `from python_modules.file_manipulation.list_files.py import Directory
+            `from directory import Directory
                 directory = Directory('md')
-                target_file = directory.choose_file()
-                # do what you want with this file
+                target_file:str = directory.choose_one_item()
+                target_files:list = directory.choose_multiple_items()
     '''
     def __init__(self, target_extension:str|list=False) -> None:
         '''
             Attributes:
-                self.path: absolute path to the current working directory
-                self.target_extension: optional extension to search for in directory
-                self.changed_directory: defaults to false, only changed to true if a new path is used
-                self.files: list containing files targeted
-                self.file_dict: dictionary to select one file from many, only needed if there is > 1 file
+                self.Path: absolute path to the current working directory
+                self.Target_Extension: optional extension to search for in directory
+                self.Changed_Directory: defaults to false, only changed to true if a new path is used
+                self.Files: list containing files targeted
+                self.File_Dict: dictionary to select one file from many, only needed if there is > 1 file
         '''
         os.system('clear')
         self.__directory_path = os.getcwd()
@@ -91,9 +101,9 @@ class Directory():
         '''
             Determines the number of files within the current directory. 
             If there are no target files, then you can choose to search
-            from a new path. At that point, self.changed_directory will
-            flip to True, self.path, self.files, and self.file_dict will
-            be reassigned accordingly
+            from a new path. At that point, self.Changed_Directory will
+            flip to True, self.Path, self.Files, and self.File_Dict will
+            be reassigned accordingly.
         '''
         extension_name = self.Target_Extension
         if not extension_name: # if extension is not provided
@@ -117,11 +127,11 @@ class Directory():
             if type(self.Target_Extension) is list: # if a list of extensions is provided
                 file_list = []
                 for extension in self.Target_Extension:
-                    file_list.extend([x for x in os.listdir(self.path) if extension == x.split('.')[-1]])
+                    file_list.extend([x for x in os.listdir(self.Directory_Path) if extension == x.split('.')[-1]])
             else: # if only one extension is provided
-                file_list = [x for x in os.listdir(self.path) if self.Target_Extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
+                file_list = [x for x in os.listdir(self.Directory_Path) if self.Target_Extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
         else: # if no parameter is provided 
-            file_list = os.listdir(self.path)
+            file_list = os.listdir(self.Directory_Path)
             print('\nPress enter to list only visible files or any other key to list all files...')
             key = getch.getch()
             if key == '\n':
@@ -129,24 +139,32 @@ class Directory():
         return file_list
 
     def reset_directory_attributes(self, new_path:str) -> list:
-        '''If a new path is provided, then reset self.path and extract new target files'''
+        '''If a new path is provided, then reset self.Path and extract new target files'''
         self.Directory_Path = new_path
         new_files = self.parse_directory()
         return new_files
 
-    def get_key_press(self, message:str) -> bool:
+    def get_key_press(self, message:str='Press enter to continue...', func:FunctionType=quit) -> bool:
         '''
             Obtain key press to determine whether or not to continue in the script.
             Pressing enter will continue, and any other input will terminate the script.
+
+            Parameters:
+                - message : Optional string to be printed before the input request is initiated.
+                            If not supplied, 'Press enter to continue...' will print.
+                    ex : 'Press enter to continue or any other button to quit...'
+                - func : Optional function to be executed upon pressing enter, default is quit().
         '''
-        if message != 'NONE':
+        def inner_function(*args, **kwargs):
+            '''Inner function to process function arguments.'''
             print(message)
-        key = getch.getch()
-        if key == '\n':
-            return True
-        else:
-            print('\nTerminating...\n')
-            quit()
+            key = getch.getch()
+            if key == '\n':
+                return True
+            else:
+                print('\nTerminating...\n')
+                func(*args, **kwargs)
+        return inner_function
 
     def input_new_file_path(self) -> str:
         '''
