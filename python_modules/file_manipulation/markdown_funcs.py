@@ -11,8 +11,8 @@
         - Pandoc Eisvogel Latex Template
             - extract most recent zip file from : https://github.com/Wandmalfarbe/pandoc-latex-template/releases/tag/2.4.2
                 - Will need to be moved into your pandoc templates directory!
-                    - Unix / Linux / MacOS : '/Users/USERNAME/.local/share/pandoc/templates/
-                    - Windows Vista or later : 'C:\Users\USERNAME\AppData\Roaming\pandoc\\templates
+                    - Unix / Linux / MacOS : /Users/USERNAME/.local/share/pandoc/templates/
+                    - Windows Vista or later : C:\Users\USERNAME\AppData\Roaming\pandoc\\templates
 '''
 
 from directory import Directory, get_key_press
