@@ -11,7 +11,7 @@ import getch
 
 class Directory():
     '''
-        Directory class, no parents, one child (markdown_funcs.py) (as of 4/11/2024).
+        Directory class, no parents.
         
         Example Instantiation:
             `from python_modules.file_manipulation.list_files.py import Directory
@@ -148,7 +148,7 @@ class Directory():
                         self.get_key_press('\nNot an acceptable value. Press enter to retry or any other key to quit...')
                     else:
                         return self.file_dict[selection]
-                except:
+                except ValueError:
                     self.get_key_press('\nNot an acceptable value. Press enter to retry or any other key to quit...')
         else:
             return self.files[0]
