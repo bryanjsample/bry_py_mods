@@ -6,7 +6,6 @@
     External Dependencies:
         - Python
             - Getch : pip install getch
-
 '''
 
 import os
@@ -25,6 +24,7 @@ def get_key_press(message:str='Press enter to continue or any other key to quit.
                                 If not supplied, return value defaults to True to allow user to run an if statement in their main function.
             - func : Optional function to be executed upon pressing enter, default is quit().
     '''
+
     def eval_key_press(*args, **kwargs) -> bool|Callable:
         '''Inner function to process function arguments.'''
         if key == '\n':
@@ -138,7 +138,7 @@ class Directory():
     def check_target_extensions(self, target_extension:str|List[str]) -> str|List[str]|bool:
         '''
             Correct any minor mistakes made within target_extension argument. If any arguments are invalid, then execution will be terminated.
-            No need to call manually.
+            No need to call outside of __init__().
         '''
         valid_extensions = ['pdf', 'md', 'jpg', 'jpeg', 'svg', 'gif', 'html', 'xls', 'docx', 'png', 'doc', 'avi', 'fnt', 'txt', 'xml', 'csv', 'tiff', 'tif', 'exe']
         if target_extension:
@@ -169,7 +169,7 @@ class Directory():
             from a new path. At that point, self.Changed_Directory will
             flip to True, self.Path, self.Files, and self.File_Dict will
             be reassigned accordingly.
-            No need to call manually.
+            No need to call outside of __init__().
         '''
         extension_name = self.Target_Extension
         if not extension_name: # if extension is not provided
@@ -190,7 +190,7 @@ class Directory():
     def list_files(self) -> List[str]:
         '''
             Forms a list of target files and returns the list.
-            No need to call manually.
+            No need to call outside of __init__().
         '''
         if self.Target_Extension: # if parameter is provided
             if type(self.Target_Extension) is list: # if a list of extensions is provided
@@ -208,7 +208,7 @@ class Directory():
     def form_file_dict(self, count:int=1) -> dict:
         '''
             Form a dictionary containing all target files as values and an associated integer as the key and returns it.
-            No need to call manually.
+            No need to call outside of __init__().
         '''
         file_dict = {}
         for f in self.Files:
@@ -222,7 +222,7 @@ class Directory():
         '''
             Optionally input a new file path. First, check that it exists. If it does, return it. Otherwise
             you can decided whether to retry or terminate the script.
-            No need to call manually.
+            No need to call outside of __init__().
         '''
         while True:
             fpath = input('\nEnter new path to directory or q to quit: ')
@@ -239,7 +239,7 @@ class Directory():
     def reset_directory_attributes(self, new_path:str) -> List[str]:
         '''
             If a new path is provided, then reset self.Path and extract new target files.
-            No need to call manually.
+            No need to call outside of __init__().
         '''
         self.Directory_Path = new_path
         new_files = self.parse_directory()
