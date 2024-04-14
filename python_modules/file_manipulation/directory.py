@@ -16,7 +16,6 @@ def get_key_press(message:str='Press enter to continue or any other key to quit.
         Parameters:
             - message : Optional string to be printed before the input request is initiated.
                         If not supplied, 'Press enter to continue or any other key to quit...' will print.
-                ex : 'Press enter to continue or any other button to quit...'
             - pressed_enter : Boolean value or function to be returned if the user presses the enter key.
                                 If not supplied, return value defaults to True to allow user to run an if statement in their main function.
             - func : Optional function to be executed upon pressing enter, default is quit().
