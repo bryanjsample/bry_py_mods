@@ -1,4 +1,10 @@
-'''Module to sort files in a directory into their own sub-directories based on their extension'''
+'''
+    Module to sort files in a directory into their own sub-directories based on their extension
+
+    External Dependencies:
+        - Python
+            - Getch : pip install getch
+'''
 
 from directory import Directory, get_key_press
 import os

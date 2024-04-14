@@ -1,5 +1,18 @@
 '''
-    Module to convert any number of Markdown files to PDF files.
+    Module to convert any number of Markdown files to PDF files using github.com/Wandmalfarbe's pandoc template. (https://github.com/Wandmalfarbe/pandoc-latex-template?tab=readme-ov-file)
+
+    External Dependencies:
+        - Python
+            - Getch : pip install getch
+        - CLI Tools
+            - texlive (Latex processor) : brew install texlive
+            - cairo (vector graphics processor) : brew install cairo
+            - pandoc (file converter) : brew install pandoc
+        - Pandoc Eisvogel Latex Template
+            - extract most recent zip file from : https://github.com/Wandmalfarbe/pandoc-latex-template/releases/tag/2.4.2
+                - Will need to be moved into your pandoc templates directory!
+                    - Unix / Linux / MacOS : '/Users/USERNAME/.local/share/pandoc/templates/
+                    - Windows Vista or later : 'C:\Users\USERNAME\AppData\Roaming\pandoc\\templates
 '''
 
 from directory import Directory, get_key_press
