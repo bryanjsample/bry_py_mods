@@ -1,5 +1,5 @@
 '''
-    Module to convert a Markdown file to a PDF file.
+    Module to convert any number of Markdown files to PDF files.
 '''
 
 from directory import Directory, get_key_press
@@ -8,7 +8,16 @@ import subprocess
 import os
 
 class MarkdownFile():
-    '''Object representing a single markdown file.'''
+    '''
+        Object representing a single markdown file. No parent classes.
+        
+        Properties:
+            - self.Parent_Directory : path to parent directory of file object
+            - self.Target_Name : file name of the targeted md file
+            - self.Target_Path : path to targeted md file
+            - self.Destination_Name : file name of the destination pdf file
+            - self.Destination_Path : path to desination pdf file
+    '''
     def __init__(self, target_name, directory_path):
         self.__parent_directory = directory_path
         self.__target_name = target_name
@@ -55,27 +64,41 @@ class MarkdownFile():
         return f'File Name : {self.Target_Name}\nParent directory : {self.Parent_Directory}'
 
     def confirm_conversion(self):
+        '''
+            Confirm with enter key before converting.
+        '''
         conversion_string = f'Attempting to convert {self.Target_Name}  ---->  {self.Destination_Name}...'
         print('\n\n', conversion_string)
         get_key_press(message=f'\nPress enter to convert or any other key to terminate...')
         return conversion_string
 
     def open_pdf_file(self):
+        '''
+            Open pdf file in preview.
+        '''
         subprocess.run(['open', self.Destination_Path])
         os.system('clear')
 
-    def convert_md_to_pdf(self, converted_files:List[str]):
-        '''Convert target markdown file to a pdf of the same name.'''
+    def convert_md_to_pdf(self, converted_files):
+        '''
+            Convert target markdown file to a pdf of the same name.
+        '''
         os.system('clear')
         conversion_string = self.confirm_conversion()
         os.system('clear')
         print('\n\n', f'{conversion_string:^50}'.replace('Attempting to convert', 'Converting'))
-        subprocess.check_call(['pandoc', self.Target_Path, '-o', self.Destination_Path, '--from', 'markdown', '--template', 'eisvogel', '--listings'])
+        self.conversion(converted_files)
         os.system('clear')
-        converted_files[self.Target_Name] = self.Destination_Name
         open_confirmed = get_key_press(message=f'\n\nFinished converting {self.Destination_Name}. Press enter to open or any other key to continue...\n', pressed_enter=True, pressed_any_other=False)
         if open_confirmed:
             self.open_pdf_file()
+
+    def conversion(self, converted_files):
+        try:
+            subprocess.check_call(['pandoc', self.Target_Path, '-o', self.Destination_Path, '--from', 'markdown', '--template', 'eisvogel', '--listings'])
+            converted_files[self.Target_Name] = self.Destination_Name
+        except subprocess.CalledProcessError:
+            get_key_press(message=f'\n{self.Target_Name} failed to convert. Press enter to continue converting or any other key to terminate...')
 
 class MarkdownFiles(Directory):
     '''
@@ -83,7 +106,9 @@ class MarkdownFiles(Directory):
         from directory.py's Directory class.
     '''
     def __init__(self, target_extension:bool | str=False):
-        '''Inherit attributes and obtain target file.'''
+        '''
+            Inherit attributes and obtain list of target markdown file objects.
+        '''
         Directory.__init__(self, target_extension)
         self.__target_files:List[MarkdownFile] = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
 
@@ -100,25 +125,26 @@ class MarkdownFiles(Directory):
             Parent Directory : /path/to/markdown/files
         '''
         return f'Markdown Files : {', '.join(self.Target_Files)}\nParent Directory : {self.Directory_Path}'
-    
-    def finished_converting(self,) -> None:
+
+    def finished_converting(self) -> None:
+        '''
+            Once finished converting, print all files that successfully converted
+        '''
         tar_width = len(max(self.converted_files.keys()))
         print(f'\nFinished processing all md files in {self.Directory_Path}.\n')
         for target, destination in self.converted_files.items():
             print(f'    {target:>{tar_width}} ----> {destination}')
 
-    
     def convert_files(self) -> None:
-        self.converted_files = {}
+        self.converted_files:dict = {}
         for mdfile in self.Target_Files:
             mdfile.convert_md_to_pdf(self.converted_files)
-        
-
+        os.system('clear')
+        self.finished_converting()
 
 def main():
     markdown_files = MarkdownFiles('md')
     markdown_files.convert_files()
-
 
 if __name__ == "__main__":
     main()

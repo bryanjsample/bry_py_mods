@@ -98,7 +98,7 @@ class Directory():
     @Target_Extension.setter
     def Target_Extension(self, new_extension:str) -> None:
         self.__target_extension = new_extension
-    
+
     @property
     def Changed_Directory(self) -> bool:
         return self.__changed_directory
@@ -257,7 +257,7 @@ class Directory():
                     get_key_press(message='\nNot an acceptable value. Press enter to retry or any other key to quit...')
         else:
             return self.Files[0]
-        
+
     def choose_multiple_items(self) -> List[str] | str:
         '''If there is only one file, return it. Otherwise, print formatted dictionary and allow the user to select multiple files using a space seperated sequence.'''
         if len(self.Files) > 1:
