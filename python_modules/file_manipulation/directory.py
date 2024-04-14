@@ -1,20 +1,21 @@
 '''
     Module to assist with selecting items from a directory.
-    Import Directory class from this module and instantiate with an
-    optional parameter {target_extension}. If provided, then only
-    items with that extension will be listed. Otherwise, you can choose
-    to show all items, including hidden items, or only non-hidden items.
-
-
+    Author : Bryan Sample
+    Date : 4/14/2024
 '''
 
 import os
 import getch
-from types import FunctionType
+from typing import Callable
 
 class Directory():
     '''
         Directory Class to be inherited / manipulated
+
+        Import Directory class from this module and instantiate with an
+        optional parameter {target_extension:str}. If provided, then only
+        items with that extension will be listed. Otherwise, you can choose
+        to show all items, including hidden items, or only non-hidden items.
 
         Properties
             - self.Target_Extension: optional extension to search for in directory
@@ -31,8 +32,14 @@ class Directory():
     '''
     def __init__(self, target_extension:str|list=False) -> None:
         '''
+            1. Clear stdout
+            2. Obtain cwd path and set self.Directory_Path
+            3. Check that target extensions are valid if provided, or default to displaying all files
+            4. Obtain a list of targeted file name strings if there is more than one, or a single file name string if there is only one.
+            5. Form a dictionary of files and print keys and values to stdout
+
             Attributes:
-                self.Path: absolute path to the current working directory
+                self.Directory_Path: absolute path to the current working directory
                 self.Target_Extension: optional extension to search for in directory
                 self.Changed_Directory: defaults to false, only changed to true if a new path is used
                 self.Files: list containing files targeted
@@ -40,49 +47,45 @@ class Directory():
         '''
         os.system('clear')
         self.__directory_path = os.getcwd()
-        if target_extension:
-            print(f'\nSearching for {target_extension} files inside of {self.Directory_Path}...')
-        else:
-            print(f'\nSearching for all files inside of {self.Directory_Path}...')
-        self.__target_extension = target_extension
+        self.__target_extension = self.check_target_extensions(target_extension)
         self.__changed_directory = False 
         self.__files = self.parse_directory()
         if len(self.Files) > 1:
             self.__file_dict = self.form_file_dict()
 
     @property
-    def Directory_Path(self):
+    def Directory_Path(self) -> str:
         return self.__directory_path
     @Directory_Path.setter
-    def Directory_Path(self, new_path:str):
+    def Directory_Path(self, new_path:str) -> None:
         self.__directory_path = new_path
 
     @property
-    def Target_Extension(self):
+    def Target_Extension(self) -> str|bool:
         return self.__target_extension
     @Target_Extension.setter
-    def Target_Extension(self, new_extension:str):
+    def Target_Extension(self, new_extension:str) -> None:
         self.__target_extension = new_extension
     
     @property
-    def Changed_Directory(self):
+    def Changed_Directory(self) -> bool:
         return self.__changed_directory
     @Changed_Directory.setter
-    def Changed_Directory(self, value:bool):
+    def Changed_Directory(self, value:bool) -> None:
         self.__changed_directory = value
 
     @property
-    def Files(self):
+    def Files(self) -> list:
         return self.__files
     @Files.setter
-    def Files(self, new_files:list|str):
+    def Files(self, new_files:list) -> None:
         self.__files = new_files
 
     @property
-    def File_Dict(self):
+    def File_Dict(self) -> dict:
         return self.__file_dict
     @File_Dict.setter
-    def File_Dict(self, new_dict:dict):
+    def File_Dict(self, new_dict:dict) -> None:
         self.__file_dict = new_dict
 
     def __str__(self) -> str:
@@ -111,7 +114,7 @@ class Directory():
         file_list = self.list_files()
         if len(file_list) == 0:
             self.get_key_press('\nNo matching files found in the current working directory. Press enter to input a custom file-path or any other key to quit...')
-            new_path = input('\nEnter new directory path: ')
+            new_path = self.input_new_file_path()
             if new_path:
                 self.Changed_Directory = True
                 file_list = self.reset_directory_attributes(new_path)
@@ -132,11 +135,34 @@ class Directory():
                 file_list = [x for x in os.listdir(self.Directory_Path) if self.Target_Extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
         else: # if no parameter is provided 
             file_list = os.listdir(self.Directory_Path)
-            print('\nPress enter to list only visible files or any other key to list all files...')
-            key = getch.getch()
-            if key == '\n':
+            if self.get_key_press('\nPress enter to list only visible files or any other key to list all files...', pressed_any_other=False):
                 file_list = [x for x in file_list if x[0] != '.']
         return file_list
+
+    def check_target_extensions(self, target_extension:str|list) -> str|list|bool:
+        '''Correct any minor mistakes made within target_extension argument. If any arguments are invalid, then execution will be terminated.'''
+        valid_extensions = ['pdf', 'jpg', 'jpeg', 'svg', 'gif', 'html', 'xls', 'docx', 'png', 'doc', 'avi', 'fnt', 'txt', 'xml', 'csv', 'tiff', 'tif', 'exe']
+        if target_extension:
+            if type(target_extension) is list:
+                extensions = [x.lower().replace('.', '') for x in target_extension]
+                for i in extensions:
+                    if i not in valid_extensions:
+                        print(f'\n{i} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
+                        quit()
+                print(f'\nSearching for {', '.join(extensions)} files inside of {self.Directory_Path}...')
+                return extensions
+            else:
+                extension = target_extension.lower().replace('.', '')
+                if extension not in valid_extensions:
+                    print(f'\n{i} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
+                    quit()
+                else:
+                    print(f'\nSearching for {extension} files inside of {self.Directory_Path}...')
+                    return extension
+        else:
+            print(f'\nSearching for all files inside of {self.Directory_Path}...')
+            return False
+            
 
     def reset_directory_attributes(self, new_path:str) -> list:
         '''If a new path is provided, then reset self.Path and extract new target files'''
@@ -144,27 +170,37 @@ class Directory():
         new_files = self.parse_directory()
         return new_files
 
-    def get_key_press(self, message:str='Press enter to continue...', func:FunctionType=quit) -> bool:
+    def get_key_press(self, message:str='Press enter to continue or any other key to quit...', pressed_enter:bool|Callable=True, pressed_any_other:bool|Callable=quit) -> bool|Callable:
         '''
             Obtain key press to determine whether or not to continue in the script.
-            Pressing enter will continue, and any other input will terminate the script.
+            Pressing enter will return pressed_enter:bool|func, and any other input will return pressed_any_other:bool|func.
 
             Parameters:
                 - message : Optional string to be printed before the input request is initiated.
                             If not supplied, 'Press enter to continue...' will print.
                     ex : 'Press enter to continue or any other button to quit...'
+                - pressed_enter : Boolean value or function to be returned if the user presses the enter key.
+                                    If not supplied, return value defaults to True to allow user to run an if statement in their main function.
                 - func : Optional function to be executed upon pressing enter, default is quit().
         '''
-        def inner_function(*args, **kwargs):
+        def inner_function(*args, **kwargs) -> bool|Callable:
             '''Inner function to process function arguments.'''
-            print(message)
-            key = getch.getch()
+
             if key == '\n':
-                return True
+                if type(pressed_enter) is bool:
+                    return pressed_enter
+                else:
+                    pressed_enter(*args, **kwargs)
             else:
-                print('\nTerminating...\n')
-                func(*args, **kwargs)
-        return inner_function
+                if type(pressed_any_other) is bool:
+                    return pressed_any_other
+                else:
+                    print('\nTerminating...\n')
+                    pressed_any_other(*args, **kwargs)
+
+        print(message)
+        key = getch.getch()
+        return inner_function()
 
     def input_new_file_path(self) -> str:
         '''
@@ -172,13 +208,16 @@ class Directory():
             you can decided whether to retry or terminate the script.
         '''
         while True:
-            fpath = input('\nEnter new path to directory: ')
-            try:
-                os.listdir(fpath)
-            except NotADirectoryError:
-                self.get_key_press('\nDirectory path not found. Press enter to retry or any other key to quit...')
+            fpath = input('\nEnter new path to directory or q to quit: ')
+            if fpath in ['q', 'Q', 'quit', 'Quit', 'exit']:
+                print('\nTerminating...\n')
             else:
-                return fpath
+                try:
+                    os.listdir(fpath)
+                except FileNotFoundError:
+                    self.get_key_press('\nDirectory path not found. Press enter to retry or any other key to quit...')
+                else:
+                    return fpath
 
     def form_file_dict(self, count:int=1) -> dict:
         '''Form a dictionary containing all target files as values and an associated integer as the key and returns it.'''
@@ -229,3 +268,10 @@ class Directory():
                 selections.clear()
         else:
             return self.files[0]
+
+def main():
+    dir = Directory()
+    dir.choose_one_item()
+
+if __name__ == "__main__":
+    main()
