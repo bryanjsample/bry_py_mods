@@ -6,7 +6,39 @@
 
 import os
 import getch
-from typing import Callable
+from typing import Callable, List
+
+def get_key_press(message:str='Press enter to continue or any other key to quit...', pressed_enter:bool|Callable=True, pressed_any_other:bool|Callable=quit) -> bool|Callable:
+    '''
+        Obtain key press to determine whether or not to continue in the script.
+        Pressing enter will return pressed_enter:bool|func, and any other input will return pressed_any_other:bool|func.
+
+        Parameters:
+            - message : Optional string to be printed before the input request is initiated.
+                        If not supplied, 'Press enter to continue or any other key to quit...' will print.
+                ex : 'Press enter to continue or any other button to quit...'
+            - pressed_enter : Boolean value or function to be returned if the user presses the enter key.
+                                If not supplied, return value defaults to True to allow user to run an if statement in their main function.
+            - func : Optional function to be executed upon pressing enter, default is quit().
+    '''
+    def eval_key_press(*args, **kwargs) -> bool|Callable:
+        '''Inner function to process function arguments.'''
+
+        if key == '\n':
+            if type(pressed_enter) is bool:
+                return pressed_enter
+            else:
+                pressed_enter(*args, **kwargs)
+        else:
+            if type(pressed_any_other) is bool:
+                return pressed_any_other
+            else:
+                print('\nTerminating...\n')
+                pressed_any_other(*args, **kwargs)
+
+    print(message)
+    key = getch.getch()
+    return eval_key_press()
 
 class Directory():
     '''
@@ -46,12 +78,12 @@ class Directory():
                 self.File_Dict: dictionary to select one file from many, only needed if there is > 1 file
         '''
         os.system('clear')
-        self.__directory_path = os.getcwd()
-        self.__target_extension = self.check_target_extensions(target_extension)
-        self.__changed_directory = False 
-        self.__files = self.parse_directory()
+        self.__directory_path:str = os.getcwd()
+        self.__target_extension:str|List[str] = self.check_target_extensions(target_extension)
+        self.__changed_directory:bool = False 
+        self.__files:List[str] = self.parse_directory()
         if len(self.Files) > 1:
-            self.__file_dict = self.form_file_dict()
+            self.__file_dict:dict = self.form_file_dict()
 
     @property
     def Directory_Path(self) -> str:
@@ -75,10 +107,10 @@ class Directory():
         self.__changed_directory = value
 
     @property
-    def Files(self) -> list:
+    def Files(self) -> List[str]:
         return self.__files
     @Files.setter
-    def Files(self, new_files:list) -> None:
+    def Files(self, new_files:List[str]) -> None:
         self.__files = new_files
 
     @property
@@ -100,7 +132,7 @@ class Directory():
         '''
         return f'\n\nDirectory path: {self.Directory_Path}\n\nFiles:\n    {'\n    '.join([f for f in self.Files])}'
 
-    def check_target_extensions(self, target_extension:str|list) -> str|list|bool:
+    def check_target_extensions(self, target_extension:str|List[str]) -> str|List[str]|bool:
         '''
             Correct any minor mistakes made within target_extension argument. If any arguments are invalid, then execution will be terminated.
             No need to call manually.
@@ -127,7 +159,7 @@ class Directory():
             print(f'\nSearching for all files inside of {self.Directory_Path}...')
             return False
 
-    def parse_directory(self) -> list:
+    def parse_directory(self) -> List[str]:
         '''
             Determines the number of files within the current directory. 
             If there are no target files, then you can choose to search
@@ -141,18 +173,18 @@ class Directory():
             extension_name = '*'
         file_list = self.list_files()
         if len(file_list) == 0:
-            self.get_key_press('\nNo matching files found in the current working directory. Press enter to input a custom file-path or any other key to quit...')
+            get_key_press(message='\nNo matching files found in the current working directory. Press enter to input a custom file-path or any other key to quit...')
             new_path = self.input_new_file_path()
             if new_path:
                 self.Changed_Directory = True
                 file_list = self.reset_directory_attributes(new_path)
         elif len(file_list) == 1:
-            self.get_key_press(f'\nThere is only one {extension_name} file in the directory \n\n    {file_list[0]}\n\nPress enter to continue or any other key to quit...')
+            get_key_press(message=f'\nThere is only one {extension_name} file in the directory \n\n    {file_list[0]}\n\nPress enter to continue or any other key to quit...')
         else:
             print(f'\nThere is more than one {extension_name} file in the current working directory:\n')
         return file_list
 
-    def list_files(self) -> list:
+    def list_files(self) -> List[str]:
         '''
             Forms a list of target files and returns the list.
             No need to call manually.
@@ -166,7 +198,7 @@ class Directory():
                 file_list = [x for x in os.listdir(self.Directory_Path) if self.Target_Extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
         else: # if no parameter is provided 
             file_list = os.listdir(self.Directory_Path)
-            if self.get_key_press('\nPress enter to list only visible files or any other key to list all files...', pressed_any_other=False):
+            if get_key_press(message='\nPress enter to list only visible files or any other key to list all files...', pressed_any_other=False):
                 file_list = [x for x in file_list if x[0] != '.']
         return file_list
 
@@ -197,11 +229,11 @@ class Directory():
                 try:
                     os.listdir(fpath)
                 except FileNotFoundError:
-                    self.get_key_press('\nDirectory path not found. Press enter to retry or any other key to quit...')
+                    get_key_press(message='\nDirectory path not found. Press enter to retry or any other key to quit...')
                 else:
                     return fpath
 
-    def reset_directory_attributes(self, new_path:str) -> list:
+    def reset_directory_attributes(self, new_path:str) -> List[str]:
         '''
             If a new path is provided, then reset self.Path and extract new target files.
             No need to call manually.
@@ -209,38 +241,6 @@ class Directory():
         self.Directory_Path = new_path
         new_files = self.parse_directory()
         return new_files
-
-    def get_key_press(self, message:str='Press enter to continue or any other key to quit...', pressed_enter:bool|Callable=True, pressed_any_other:bool|Callable=quit) -> bool|Callable:
-        '''
-            Obtain key press to determine whether or not to continue in the script.
-            Pressing enter will return pressed_enter:bool|func, and any other input will return pressed_any_other:bool|func.
-
-            Parameters:
-                - message : Optional string to be printed before the input request is initiated.
-                            If not supplied, 'Press enter to continue or any other key to quit...' will print.
-                    ex : 'Press enter to continue or any other button to quit...'
-                - pressed_enter : Boolean value or function to be returned if the user presses the enter key.
-                                    If not supplied, return value defaults to True to allow user to run an if statement in their main function.
-                - func : Optional function to be executed upon pressing enter, default is quit().
-        '''
-        def eval_key_press(*args, **kwargs) -> bool|Callable:
-            '''Inner function to process function arguments.'''
-
-            if key == '\n':
-                if type(pressed_enter) is bool:
-                    return pressed_enter
-                else:
-                    pressed_enter(*args, **kwargs)
-            else:
-                if type(pressed_any_other) is bool:
-                    return pressed_any_other
-                else:
-                    print('\nTerminating...\n')
-                    pressed_any_other(*args, **kwargs)
-
-        print(message)
-        key = getch.getch()
-        return eval_key_press()
 
     def choose_one_item(self) -> str:
         '''If there is only one file, return it. Otherwise, print formatted dictionary and allow the user to select the file.'''
@@ -250,15 +250,15 @@ class Directory():
                 try:
                     selection = int(input('\nEnter number to choose corresponding file: '))
                     if selection not in acceptable_numbers:
-                        self.get_key_press('\nNot an acceptable value. Press enter to retry or any other key to quit...')
+                        get_key_press(message='\nNot an acceptable value. Press enter to retry or any other key to quit...')
                     else:
                         return self.File_Dict[selection]
                 except ValueError:
-                    self.get_key_press('\nNot an acceptable value. Press enter to retry or any other key to quit...')
+                    get_key_press(message='\nNot an acceptable value. Press enter to retry or any other key to quit...')
         else:
             return self.Files[0]
         
-    def choose_multiple_items(self) -> list | str:
+    def choose_multiple_items(self) -> List[str] | str:
         '''If there is only one file, return it. Otherwise, print formatted dictionary and allow the user to select multiple files using a space seperated sequence.'''
         if len(self.Files) > 1:
             acceptable_numbers = self.File_Dict.keys()
@@ -273,11 +273,11 @@ class Directory():
                         else:
                             valid_files.append(self.File_Dict[int(selection)])
                     if len(invalid_values) > 0:
-                        self.get_key_press(f'{', '.join(invalid_values)} are not acceptable values. Press enter to retry or any other key to quit...')
+                        get_key_press(message=f'{', '.join(invalid_values)} are not acceptable values. Press enter to retry or any other key to quit...')
                     else:
                         return valid_files
                 except ValueError:
-                    self.get_key_press('\nNot an acceptable list of values. Press enter to retry or any other key to quit...')
+                    get_key_press(message='\nNot an acceptable list of values. Press enter to retry or any other key to quit...')
                 selections.clear()
         else:
             return self.files[0]

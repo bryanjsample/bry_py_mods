@@ -2,77 +2,69 @@
     Module to convert a Markdown file to a PDF file.
 '''
 
-from directory import Directory
+from directory import Directory, get_key_press
+from typing import List
 import subprocess
 import os
 
-class MarkdownFile(Directory):
-    '''
-        Converts a Markdown File to PDF using pandoc after inheriting attributes
-        from directory.py's Directory class.
-    '''
-    def __init__(self, target_extension:bool | str=False):
-        '''Inherit attributes and obtain target file.'''
-        Directory.__init__(self, target_extension)
-        self.__target_file = self.choose_one_item()
-        self.__target_path = f'{self.Directory_Path}/{self.Target_File}'
-        self.__destination_file = None
-        self.__destination_path = None
-
+class MarkdownFile():
+    '''Object representing a single markdown file.'''
+    def __init__(self, target_name, directory_path):
+        self.__parent_directory = directory_path
+        self.__target_name = target_name
+        self.__target_path = f'{directory_path}/{target_name}'
+        self.__destination_name = target_name.replace('.md','.pdf')
+        self.__destination_path = f'{directory_path}/{self.Destination_Name}'
 
     @property
-    def Target_File(self) -> str:
-        return self.__target_file
-    @Target_File.setter
-    def Target_File(self, target_file:str) -> None:
-        self.__target_file = target_file
+    def Parent_Directory(self) -> str:
+        return self. __parent_directory
+    @Parent_Directory.getter
+    def Parent_Directory(self, parent_dir) -> None:
+        self.__parent_directory = parent_dir
+
+    @property
+    def Target_Name(self) -> str:
+        return self.__target_name
+    @Target_Name.setter
+    def Target_Name(self, target_name) -> None:
+        self.__target_name = target_name
 
     @property
     def Target_Path(self) -> str:
         return self.__target_path
     @Target_Path.setter
-    def Target_Path(self, file_path:str) -> None:
-        self.__target_path = file_path
+    def Target_Path(self, target_path) -> None:
+        self.__target_path = target_path
+
+    @property
+    def Destination_Name(self) -> str:
+        return self.__destination_name
+    @Destination_Name.setter
+    def Destination_Name(self, destination_name) -> None:
+        self.__destination_name = destination_name
 
     @property
     def Destination_Path(self) -> str:
         return self.__destination_path
     @Destination_Path.setter
-    def Destination_Path(self, dest_path:str) -> None:
-        self.__destination_path = dest_path
-
-    @property
-    def Destination_File(self) -> str:
-        return self.__destination_file
-    @Destination_File.setter
-    def Destination_File(self, new_name) -> None:
-        self.__destination_file = new_name
-
+    def Destination_Path(self, destination_path) -> None:
+        self.__destination_path = destination_path
 
     def __str__(self):
-        '''
-            Markdown File : file.md
-            Parent Directory : /path/to/markdown/file
-        '''
-        return f'Markdown File : {self.Target_File}\nParent Directory : {self.Directory_Path}'
+        return f'File Name : {self.Target_Name}\nParent directory : {self.Parent_Directory}'
 
     def confirm_conversion(self):
-        self.Destination_File = self.change_target_extension()
-        self.Destination_Path = f'{self.Directory_Path}/{self.Destination_File}'
-        conversion_string = f'Attempting to convert {self.Target_File}  ---->  {self.Destination_File}...'
+        conversion_string = f'Attempting to convert {self.Target_Name}  ---->  {self.Destination_Name}...'
         print('\n\n', conversion_string)
-        self.get_key_press(f'\nPress enter to convert or any other key to terminate...')
+        get_key_press(message=f'\nPress enter to convert or any other key to terminate...')
         return conversion_string
 
     def open_pdf_file(self):
         subprocess.run(['open', self.Destination_Path])
         os.system('clear')
 
-    def change_target_extension(self):
-        '''Change file extension from '.md' to '.pdf'.'''
-        return self.Target_File.replace('.md', '.pdf')
-    
-    def convert_md_to_pdf(self):
+    def convert_md_to_pdf(self, converted_files:List[str]):
         '''Convert target markdown file to a pdf of the same name.'''
         os.system('clear')
         conversion_string = self.confirm_conversion()
@@ -80,12 +72,52 @@ class MarkdownFile(Directory):
         print('\n\n', f'{conversion_string:^50}'.replace('Attempting to convert', 'Converting'))
         subprocess.check_call(['pandoc', self.Target_Path, '-o', self.Destination_Path, '--from', 'markdown', '--template', 'eisvogel', '--listings'])
         os.system('clear')
-        self.get_key_press(f'\n\nFinished converting {self.Destination_File}. Press enter to open or any other key to terminate...\n')
-        self.open_pdf_file()
+        converted_files[self.Target_Name] = self.Destination_Name
+        open_confirmed = get_key_press(message=f'\n\nFinished converting {self.Destination_Name}. Press enter to open or any other key to continue...\n', pressed_enter=True, pressed_any_other=False)
+        if open_confirmed:
+            self.open_pdf_file()
+
+class MarkdownFiles(Directory):
+    '''
+        Converts one or more Markdown Files to PDF using pandoc after inheriting attributes
+        from directory.py's Directory class.
+    '''
+    def __init__(self, target_extension:bool | str=False):
+        '''Inherit attributes and obtain target file.'''
+        Directory.__init__(self, target_extension)
+        self.__target_files:List[MarkdownFile] = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
+
+    @property
+    def Target_Files(self) -> List[MarkdownFile]:
+        return self.__target_files
+    @Target_Files.setter
+    def Target_Files(self, target_files:List[MarkdownFile]) -> None:
+        self.__target_files = target_files
+
+    def __str__(self):
+        '''
+            Markdown Files : file1.md, file2.md, file3.md, ...
+            Parent Directory : /path/to/markdown/files
+        '''
+        return f'Markdown Files : {', '.join(self.Target_Files)}\nParent Directory : {self.Directory_Path}'
+    
+    def finished_converting(self,) -> None:
+        tar_width = len(max(self.converted_files.keys()))
+        print(f'\nFinished processing all md files in {self.Directory_Path}.\n')
+        for target, destination in self.converted_files.items():
+            print(f'    {target:>{tar_width}} ----> {destination}')
+
+    
+    def convert_files(self) -> None:
+        self.converted_files = {}
+        for mdfile in self.Target_Files:
+            mdfile.convert_md_to_pdf(self.converted_files)
+        
+
 
 def main():
-    markdown_file = MarkdownFile('md')
-    markdown_file.convert_md_to_pdf()
+    markdown_files = MarkdownFiles('md')
+    markdown_files.convert_files()
 
 
 if __name__ == "__main__":
