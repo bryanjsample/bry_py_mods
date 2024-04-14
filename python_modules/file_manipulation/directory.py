@@ -22,7 +22,6 @@ def get_key_press(message:str='Press enter to continue or any other key to quit.
     '''
     def eval_key_press(*args, **kwargs) -> bool|Callable:
         '''Inner function to process function arguments.'''
-
         if key == '\n':
             if type(pressed_enter) is bool:
                 return pressed_enter
