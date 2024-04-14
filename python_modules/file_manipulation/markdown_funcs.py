@@ -1,5 +1,5 @@
-'''
-    Module to convert any number of Markdown files to PDF files using github.com/Wandmalfarbe's pandoc template. (https://github.com/Wandmalfarbe/pandoc-latex-template?tab=readme-ov-file)
+r'''
+    Module to convert any number of Markdown files to PDF files using github.com/Wandmalfarbe's pandoc template. "(https://github.com/Wandmalfarbe/pandoc-latex-template?tab=readme-ov-file)"
 
     External Dependencies:
         - Python
@@ -9,16 +9,17 @@
             - cairo (vector graphics processor) : brew install cairo
             - pandoc (file converter) : brew install pandoc
         - Pandoc Eisvogel Latex Template
-            - extract most recent zip file from : https://github.com/Wandmalfarbe/pandoc-latex-template/releases/tag/2.4.2
+            - extract most recent zip file from : "https://github.com/Wandmalfarbe/pandoc-latex-template/releases/tag/2.4.2"
                 - Will need to be moved into your pandoc templates directory!
-                    - Unix / Linux / MacOS : /Users/USERNAME/.local/share/pandoc/templates/
-                    - Windows Vista or later : C:\Users\USERNAME\AppData\Roaming\pandoc\\templates
+                    - Unix / Linux / MacOS : "/Users/USERNAME/.local/share/pandoc/templates/"
+                    - Windows Vista or later : "C:\Users\USERNAME\AppData\Roaming\pandoc\\templates"
 '''
 
 from directory import Directory, get_key_press
 from typing import List
 import subprocess
 import os
+from time import sleep
 
 class MarkdownFile():
     '''
@@ -37,6 +38,7 @@ class MarkdownFile():
         self.__target_path = f'{directory_path}/{target_name}'
         self.__destination_name = target_name.replace('.md','.pdf')
         self.__destination_path = f'{directory_path}/{self.Destination_Name}'
+
 
     @property
     def Parent_Directory(self) -> str:
@@ -143,10 +145,13 @@ class MarkdownFiles(Directory):
         '''
             Once finished converting, print all files that successfully converted
         '''
-        tar_width = len(max(self.converted_files.keys()))
-        print(f'\nFinished processing all md files in {self.Directory_Path}.\n')
-        for target, destination in self.converted_files.items():
-            print(f'    {target:>{tar_width}} ----> {destination}')
+        if len(self.converted_files.keys()) == 0:
+            print('\nNo md were converted.\n')
+        else:
+            tar_width = len(max(self.converted_files.keys()))
+            print(f'\nFinished processing all md files in {self.Directory_Path}.\n')
+            for target, destination in self.converted_files.items():
+                print(f'    {target:>{tar_width}} ----> {destination}')
 
     def convert_files(self) -> None:
         self.converted_files:dict = {}
