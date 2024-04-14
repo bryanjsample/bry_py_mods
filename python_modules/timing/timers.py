@@ -42,18 +42,3 @@ def time_it(func):
             return f'{round(seconds, ndigits=5)} seconds'
 
     return timing
-
-@time_it
-def counter():
-    for i in range(1000000):
-        x = 1
-        y = 2
-        z = x + y
-
-
-def main():
-    counter()
-
-if __name__ == "__main__":
-    main()
-
