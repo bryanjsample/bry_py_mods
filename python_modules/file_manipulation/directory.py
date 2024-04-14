@@ -100,6 +100,33 @@ class Directory():
         '''
         return f'\n\nDirectory path: {self.Directory_Path}\n\nFiles:\n    {'\n    '.join([f for f in self.Files])}'
 
+    def check_target_extensions(self, target_extension:str|list) -> str|list|bool:
+        '''
+            Correct any minor mistakes made within target_extension argument. If any arguments are invalid, then execution will be terminated.
+            No need to call manually.
+        '''
+        valid_extensions = ['pdf', 'md', 'jpg', 'jpeg', 'svg', 'gif', 'html', 'xls', 'docx', 'png', 'doc', 'avi', 'fnt', 'txt', 'xml', 'csv', 'tiff', 'tif', 'exe']
+        if target_extension:
+            if type(target_extension) is list:
+                extensions = [x.lower().replace('.', '') for x in target_extension]
+                for i in extensions:
+                    if i not in valid_extensions:
+                        print(f'\n{i} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
+                        quit()
+                print(f'\nSearching for {', '.join(extensions)} files inside of {self.Directory_Path}...')
+                return extensions
+            else:
+                extension = target_extension.lower().replace('.', '')
+                if extension not in valid_extensions:
+                    print(f'\n{extension} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
+                    quit()
+                else:
+                    print(f'\nSearching for {extension} files inside of {self.Directory_Path}...')
+                    return extension
+        else:
+            print(f'\nSearching for all files inside of {self.Directory_Path}...')
+            return False
+
     def parse_directory(self) -> list:
         '''
             Determines the number of files within the current directory. 
@@ -107,6 +134,7 @@ class Directory():
             from a new path. At that point, self.Changed_Directory will
             flip to True, self.Path, self.Files, and self.File_Dict will
             be reassigned accordingly.
+            No need to call manually.
         '''
         extension_name = self.Target_Extension
         if not extension_name: # if extension is not provided
@@ -125,7 +153,10 @@ class Directory():
         return file_list
 
     def list_files(self) -> list:
-        '''Forms a list of target files and returns the list.'''
+        '''
+            Forms a list of target files and returns the list.
+            No need to call manually.
+        '''
         if self.Target_Extension: # if parameter is provided
             if type(self.Target_Extension) is list: # if a list of extensions is provided
                 file_list = []
@@ -139,33 +170,42 @@ class Directory():
                 file_list = [x for x in file_list if x[0] != '.']
         return file_list
 
-    def check_target_extensions(self, target_extension:str|list) -> str|list|bool:
-        '''Correct any minor mistakes made within target_extension argument. If any arguments are invalid, then execution will be terminated.'''
-        valid_extensions = ['pdf', 'jpg', 'jpeg', 'svg', 'gif', 'html', 'xls', 'docx', 'png', 'doc', 'avi', 'fnt', 'txt', 'xml', 'csv', 'tiff', 'tif', 'exe']
-        if target_extension:
-            if type(target_extension) is list:
-                extensions = [x.lower().replace('.', '') for x in target_extension]
-                for i in extensions:
-                    if i not in valid_extensions:
-                        print(f'\n{i} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
-                        quit()
-                print(f'\nSearching for {', '.join(extensions)} files inside of {self.Directory_Path}...')
-                return extensions
+    def form_file_dict(self, count:int=1) -> dict:
+        '''
+            Form a dictionary containing all target files as values and an associated integer as the key and returns it.
+            No need to call manually.
+        '''
+        file_dict = {}
+        for f in self.Files:
+            if file_dict.get(count, 'DNE') == 'DNE':
+                file_dict[count] = f
+                print(f'{count: >{4+len(str(len(self.Files)))}} : {f}') 
+                count += 1
+        return file_dict
+
+    def input_new_file_path(self) -> str:
+        '''
+            Optionally input a new file path. First, check that it exists. If it does, return it. Otherwise
+            you can decided whether to retry or terminate the script.
+            No need to call manually.
+        '''
+        while True:
+            fpath = input('\nEnter new path to directory or q to quit: ')
+            if fpath in ['q', 'Q', 'quit', 'Quit', 'exit']:
+                print('\nTerminating...\n')
             else:
-                extension = target_extension.lower().replace('.', '')
-                if extension not in valid_extensions:
-                    print(f'\n{i} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
-                    quit()
+                try:
+                    os.listdir(fpath)
+                except FileNotFoundError:
+                    self.get_key_press('\nDirectory path not found. Press enter to retry or any other key to quit...')
                 else:
-                    print(f'\nSearching for {extension} files inside of {self.Directory_Path}...')
-                    return extension
-        else:
-            print(f'\nSearching for all files inside of {self.Directory_Path}...')
-            return False
-            
+                    return fpath
 
     def reset_directory_attributes(self, new_path:str) -> list:
-        '''If a new path is provided, then reset self.Path and extract new target files'''
+        '''
+            If a new path is provided, then reset self.Path and extract new target files.
+            No need to call manually.
+        '''
         self.Directory_Path = new_path
         new_files = self.parse_directory()
         return new_files
@@ -177,13 +217,13 @@ class Directory():
 
             Parameters:
                 - message : Optional string to be printed before the input request is initiated.
-                            If not supplied, 'Press enter to continue...' will print.
+                            If not supplied, 'Press enter to continue or any other key to quit...' will print.
                     ex : 'Press enter to continue or any other button to quit...'
                 - pressed_enter : Boolean value or function to be returned if the user presses the enter key.
                                     If not supplied, return value defaults to True to allow user to run an if statement in their main function.
                 - func : Optional function to be executed upon pressing enter, default is quit().
         '''
-        def inner_function(*args, **kwargs) -> bool|Callable:
+        def eval_key_press(*args, **kwargs) -> bool|Callable:
             '''Inner function to process function arguments.'''
 
             if key == '\n':
@@ -200,34 +240,7 @@ class Directory():
 
         print(message)
         key = getch.getch()
-        return inner_function()
-
-    def input_new_file_path(self) -> str:
-        '''
-            Optionally input a new file path. First, check that it exists. If it does, return it. Otherwise
-            you can decided whether to retry or terminate the script.
-        '''
-        while True:
-            fpath = input('\nEnter new path to directory or q to quit: ')
-            if fpath in ['q', 'Q', 'quit', 'Quit', 'exit']:
-                print('\nTerminating...\n')
-            else:
-                try:
-                    os.listdir(fpath)
-                except FileNotFoundError:
-                    self.get_key_press('\nDirectory path not found. Press enter to retry or any other key to quit...')
-                else:
-                    return fpath
-
-    def form_file_dict(self, count:int=1) -> dict:
-        '''Form a dictionary containing all target files as values and an associated integer as the key and returns it.'''
-        file_dict = {}
-        for f in self.Files:
-            if file_dict.get(count, 'DNE') == 'DNE':
-                file_dict[count] = f
-                print(f'{count: >{4+len(str(len(self.Files)))}} : {f}') 
-                count += 1
-        return file_dict
+        return eval_key_press()
 
     def choose_one_item(self) -> str:
         '''If there is only one file, return it. Otherwise, print formatted dictionary and allow the user to select the file.'''
