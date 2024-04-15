@@ -44,10 +44,7 @@ class ItemsToOpen(Directory):
         print('All files successfully opened.')
 
 def main():
-    print(sys.argv[1:])
-    sleep(5)
     items = ItemsToOpen(sys.argv[1:])
-
     items.open_items()
 
 if __name__ == "__main__":
