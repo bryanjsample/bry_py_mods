@@ -14,16 +14,19 @@ r'''
                     - Unix / Linux / MacOS : "/Users/USERNAME/.local/share/pandoc/templates/"
                     - Windows Vista or later : "C:\Users\USERNAME\AppData\Roaming\pandoc\\templates"
 '''
-
-from directory import Directory, get_key_press
+from file_manipulation.directory import Directory, get_key_press
 from typing import List
 import subprocess
 import os
-from time import sleep
+
 
 class MarkdownFile():
-    '''
-        Object representing a single markdown file. No parent classes.
+    '''Single Markdown file object'''
+    def __init__(self, target_name:str, directory_path:str) -> None:
+        '''
+        Object representing a single markdown file.
+
+        Doesn't fully inherit from MarkdownFiles, only the name and directory path are passed in as arguments.
         
         Properties:
             - self.Parent_Directory : path to parent directory of file object
@@ -31,8 +34,7 @@ class MarkdownFile():
             - self.Target_Path : path to targeted md file
             - self.Destination_Name : file name of the destination pdf file
             - self.Destination_Path : path to desination pdf file
-    '''
-    def __init__(self, target_name:str, directory_path:str) -> None:
+        '''
         self.__parent_directory = directory_path
         self.__target_name = target_name
         self.__target_path = f'{directory_path}/{target_name}'
@@ -116,9 +118,23 @@ class MarkdownFiles(Directory):
         Converts one or more Markdown Files to PDF using pandoc after inheriting attributes
         from directory.py's Directory class.
     '''
-    def __init__(self, target_extension:str|List[str]=False):
-        '''Inherit attributes and obtain list of target markdown file objects.'''
-        Directory.__init__(self, target_extension)
+    def __init__(self):
+        '''Inherit properties from directory and obtain list of target markdown file objects.
+
+            Properties
+                - self.Target_Extension: 'md'
+                - self.Directory_Path : string of the absolute path to the directory
+                - self.Changed_Directory: defaults to false, only changed to true if a new path is used
+                - self.Files: list containing files targeted
+                - self.File_Dict: dictionary to select one file from many, only needed if there is > 1 file
+                - self.Target_Files: list of individual MarkdownFiles
+
+            Example Instantiation:
+                from file_manipulation import MarkDownFiles\n
+                mdfiles = MarkdownFiles()\n
+                mdfiles.convert_files()\n
+        '''
+        Directory.__init__(self, target_extension='md')
         self.__target_files:List[MarkdownFile] = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
 
     @property
@@ -153,7 +169,7 @@ class MarkdownFiles(Directory):
         self.finished_converting()
 
 def main():
-    markdown_files = MarkdownFiles('md')
+    markdown_files = MarkdownFiles()
     markdown_files.convert_files()
 
 if __name__ == "__main__":

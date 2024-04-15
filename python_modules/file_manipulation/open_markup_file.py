@@ -1,4 +1,4 @@
-from directory import Directory
+from file_manipulation.directory import Directory
 import os
 import subprocess
 

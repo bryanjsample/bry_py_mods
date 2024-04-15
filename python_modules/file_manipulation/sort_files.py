@@ -6,7 +6,7 @@
             - Getch : pip install getch
 '''
 
-from directory import Directory, get_key_press
+from file_manipulation.directory import Directory, get_key_press
 import os
 from time import sleep
 
