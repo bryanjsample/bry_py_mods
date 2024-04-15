@@ -35,13 +35,13 @@ keywords: [python, package, file_manipulation, readme]
 
 - **[File Manipulation](/python_modules/file_manipulation)**
   - [directory.py](/python_modules/file_manipulation/directory.py)
-    - Contains parent class Directory, which obtains contents from the current working directory and forms them into a dictionary which can then be used to select one or more files.
-  - [markdown_funcs.py](/python_modules/file_manipulation/markdown_funcs.py)
+    - Contains parent class Directory, which obtains contents from the current working directory and forms them into a dictionary which can then be used to select one or more items.
+  - [markdown_funcs.py](/python_modules/file_manipulation/convert_md.py)
     - Child of Directory. Allows the user to select one or more markdown files to convert to pdf.
-  - [sort_files.py](/python_modules/file_manipulation/sort_files.py)
-    - Child of Directory. Allows the user to sort files into sub-directories based on their extension
-  - [open_markup_file.py](/python_modules/file_manipulation/open_markup_file.py)
-    - Not implemented.
+  - [sort_files.py](/python_modules/file_manipulation/sort_items.py)
+    - Child of Directory. Allows the user to sort items into sub-directories based on their extension
+  - [open_markup_file.py](/python_modules/file_manipulation/open_items.py)
+    - Child of Directory. Allows the user choose which to open items based on their extension.
 - [**Timing**](/python_modules/timing/)
   - [timers.py](/python_modules/timing/timers.py)
     - Contains decorator function time_it() to measure execution / failure times

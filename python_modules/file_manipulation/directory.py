@@ -11,6 +11,7 @@
 import os
 import getch
 from typing import Callable, List
+from _sitebuiltins import Quitter
 
 def get_key_press(message:str='Press enter to continue or any other key to quit...', pressed_enter:bool|Callable=True, pressed_any_other:bool|Callable=quit) -> bool|Callable:
     '''
@@ -25,9 +26,12 @@ def get_key_press(message:str='Press enter to continue or any other key to quit.
             - func : Optional function to be executed upon pressing enter, default is quit().
     '''
 
-    def eval_key_press(*args, **kwargs) -> bool|Callable:
+    def eval_key_press(key:str, *args, **kwargs) -> bool|Callable:
         '''Inner function to process function arguments.'''
-        if key == '\n':
+        if key == 'q' or key == '\x1b':
+            print('\nTerminating...\n')
+            quit()
+        elif key == '\n':
             if type(pressed_enter) is bool:
                 return pressed_enter
             else:
@@ -36,12 +40,13 @@ def get_key_press(message:str='Press enter to continue or any other key to quit.
             if type(pressed_any_other) is bool:
                 return pressed_any_other
             else:
-                print('\nTerminating...\n')
+                if type(pressed_any_other) == Quitter:
+                    print('\nTerminating...\n')
                 pressed_any_other(*args, **kwargs)
 
     print(message)
     key = getch.getch()
-    return eval_key_press()
+    return eval_key_press(key)
 
 class Directory():
     '''

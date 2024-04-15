@@ -6,9 +6,10 @@
             - Getch : pip install getch
 '''
 
-from file_manipulation.directory import Directory, get_key_press
+from .directory import Directory, get_key_press
 import os
 from time import sleep
+import sys
 
 class Sorter(Directory):
     '''
@@ -18,7 +19,7 @@ class Sorter(Directory):
     def __init__(self, target_extension:str|list=False) -> None:
         Directory.__init__(self, target_extension)
 
-    def sort_files(self) -> None:
+    def sort_items(self) -> None:
         '''Move files into their respective sub-directories'''
         destination = self.destination_path()
         if self.directory_does_not_exist():
@@ -40,14 +41,15 @@ class Sorter(Directory):
         return f'{self.Directory_Path}/{self.Target_Extension}_files'
 
 def main():
-    mds = Sorter('md')
-    destination = mds.destination_path()
-    get_key_press(message=f'\nPress enter to move files into {destination} or any other key to quit...\n')
-    mds.sort_files()
-    pdfs = Sorter('pdf')
-    destination = pdfs.destination_path()
-    get_key_press(message=f'\nPress enter to move files into {destination} or any other key to quit...\n')
-    pdfs.sort_files()
+    extensions = sys.argv[1:]
+    if len(extensions) == 0:
+        extensions = input('Enter a single-space seperated series of extensions to sort: ').split(' ')
+    for extension in extensions:
+        items_to_sort = Sorter(extension)
+        destination = items_to_sort.destination_path()
+        get_key_press(message=f'\nPress enter to move files into {destination} or any other key to quit...\n')
+        items_to_sort.sort_items()
+
 
 
 if __name__ == "__main__":
