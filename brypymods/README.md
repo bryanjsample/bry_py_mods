@@ -2,7 +2,17 @@
 
 ## Library of Modules and Scripts for My Own Personal Use
 
-### [Python Modules](/python_modules)
+### COMMAND LINE SCRIPTS
+
+- `$ ofs "extension", "extension", ...`
+  - Will list all items in the current directory with the listed extensions. If no arguments are provided, then an option will be given to show only unhidden items or all items.
+  - Once items are selected, you can choose to open them all at once or one at a time.
+- `$ sfs "extension", "extension", ...`
+  - Will list all items in the current directory with the listed extensions. If no arguments are provided, then an option will be given to show only unhidden items or all items.
+  - Once items are selected, they will be sorted into sub-directories based on their extension.
+- `$ convmd`
+  - Looks for markdown files in the current directory, and allows you to choose one or more.
+  - Once items are selected, they will be converted to a pdf.
 
 #### EXTERNAL DEPENDENCIES
 
