@@ -17,16 +17,10 @@ class ItemsToOpen(Directory):
     @property
     def Target_Items(self) -> List[str]:
         return self.__target_items
-    @Target_Items.setter
-    def Target_Items(self, new_files) -> None:
-        self.__target_items = new_files
 
     @property
     def Item_Paths(self) -> List[str]:
         return self.__item_paths
-    @Item_Paths.setter
-    def Item_Paths(self, Item_Paths) -> None:
-        self.__item_paths = Item_Paths
 
     def open_items(self):
         def one_at_at_time():
