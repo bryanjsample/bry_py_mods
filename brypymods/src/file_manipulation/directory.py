@@ -9,44 +9,9 @@
 '''
 
 import os
-import getch
-from typing import Callable, List
-from _sitebuiltins import Quitter
+from typing import  List
+from .get_keys import get_key_press
 
-def get_key_press(message:str='Press enter to continue or any other key to quit...', pressed_enter:bool|Callable=True, pressed_any_other:bool|Callable=quit) -> bool|Callable:
-    '''
-        Obtain key press to determine whether or not to continue in the script.
-        Pressing enter will return pressed_enter:bool|func, and any other input will return pressed_any_other:bool|func.
-
-        Parameters:
-            - message : Optional string to be printed before the input request is initiated.
-                        If not supplied, 'Press enter to continue or any other key to quit...' will print.
-            - pressed_enter : Boolean value or function to be returned if the user presses the enter key.
-                                If not supplied, return value defaults to True to allow user to run an if statement in their main function.
-            - func : Optional function to be executed upon pressing enter, default is quit().
-    '''
-
-    def eval_key_press(key:str, *args, **kwargs) -> bool|Callable:
-        '''Inner function to process function arguments.'''
-        if key == 'q' or key == '\x1b':
-            print('\nTerminating...\n')
-            quit()
-        elif key == '\n':
-            if type(pressed_enter) is bool:
-                return pressed_enter
-            else:
-                pressed_enter(*args, **kwargs)
-        else:
-            if type(pressed_any_other) is bool:
-                return pressed_any_other
-            else:
-                if type(pressed_any_other) == Quitter:
-                    print('\nTerminating...\n')
-                pressed_any_other(*args, **kwargs)
-
-    print(message)
-    key = getch.getch()
-    return eval_key_press(key)
 
 class Directory():
     '''
@@ -101,13 +66,6 @@ class Directory():
         self.__directory_path = new_path
 
     @property
-    def Target_Extension(self) -> str|bool:
-        return self.__target_extension
-    @Target_Extension.setter
-    def Target_Extension(self, new_extension:str) -> None:
-        self.__target_extension = new_extension
-
-    @property
     def Changed_Directory(self) -> bool:
         return self.__changed_directory
     @Changed_Directory.setter
@@ -115,18 +73,16 @@ class Directory():
         self.__changed_directory = value
 
     @property
+    def Target_Extension(self) -> str|bool:
+        return self.__target_extension
+
+    @property
     def Files(self) -> List[str]:
         return self.__files
-    @Files.setter
-    def Files(self, new_files:List[str]) -> None:
-        self.__files = new_files
 
     @property
     def File_Dict(self) -> dict:
         return self.__file_dict
-    @File_Dict.setter
-    def File_Dict(self, new_dict:dict) -> None:
-        self.__file_dict = new_dict
 
     def __str__(self) -> str:
         '''
@@ -157,8 +113,11 @@ class Directory():
                 return extensions
             else:
                 extension = target_extension.lower().replace('.', '')
+                if extension in ['Q', 'q', 'Quit', 'quit']:
+                    print('\nTerminating...\n')
+                    quit()
                 if extension not in valid_extensions:
-                    print(f'\n{extension} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
+                    print(f'\n{extension} is not a valid extenstion. Please adjust your instantiation arguments and try again.\n\nTerminating...\n')
                     quit()
                 else:
                     print(f'\nSearching for {extension} files inside of {self.Directory_Path}...')
@@ -290,9 +249,11 @@ class Directory():
         else:
             return [self.Files[0]]
 
+
+
 def main():
-    dir = Directory('md')
-    dir.choose_one_item()
+    direct = Directory()
+
 
 if __name__ == "__main__":
     main()

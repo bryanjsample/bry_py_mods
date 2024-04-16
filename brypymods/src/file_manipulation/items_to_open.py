@@ -1,9 +1,7 @@
-from directory import Directory, get_key_press
+from .directory import Directory, get_key_press
 import os
 import subprocess
 from typing import List
-import sys
-from time import sleep
 
 class ItemsToOpen(Directory):
     '''
@@ -37,9 +35,3 @@ class ItemsToOpen(Directory):
         os.system('clear')
         print('All files successfully opened.')
 
-def main():
-    items = ItemsToOpen(sys.argv[1:])
-    items.open_items()
-
-if __name__ == "__main__":
-    main()

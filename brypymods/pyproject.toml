@@ -1,0 +1,24 @@
+[project]
+name = "brypymods"
+version = "2024.4.16"
+authors = [
+    {name="Bryan Sample", email="bryanjsample@gmail.com"}
+]
+description = "A package of my personal modules."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS"
+]
+
+[project.urls]
+Homepage = "https://github.com/bryanjsample/mypymods"
+
+[build-system]
+requires = ["setuptools", "getch"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

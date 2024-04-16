@@ -14,7 +14,7 @@ r'''
                     - Unix / Linux / MacOS : "/Users/USERNAME/.local/share/pandoc/templates/"
                     - Windows Vista or later : "C:\Users\USERNAME\AppData\Roaming\pandoc\\templates"
 '''
-from directory import Directory, get_key_press
+from .directory import Directory, get_key_press
 from typing import List
 import subprocess
 import os
@@ -45,37 +45,22 @@ class MarkdownFile():
     @property
     def Parent_Directory(self) -> str:
         return self. __parent_directory
-    @Parent_Directory.getter
-    def Parent_Directory(self, parent_dir) -> None:
-        self.__parent_directory = parent_dir
 
     @property
     def Target_Name(self) -> str:
         return self.__target_name
-    @Target_Name.setter
-    def Target_Name(self, target_name:str) -> None:
-        self.__target_name = target_name
 
     @property
     def Target_Path(self) -> str:
         return self.__target_path
-    @Target_Path.setter
-    def Target_Path(self, target_path:str) -> None:
-        self.__target_path = target_path
 
     @property
     def Destination_Name(self) -> str:
         return self.__destination_name
-    @Destination_Name.setter
-    def Destination_Name(self, destination_name:str) -> None:
-        self.__destination_name = destination_name
 
     @property
     def Destination_Path(self) -> str:
         return self.__destination_path
-    @Destination_Path.setter
-    def Destination_Path(self, destination_path:str) -> None:
-        self.__destination_path = destination_path
 
     def __str__(self):
         return f'File Name : {self.Target_Name}\nParent directory : {self.Parent_Directory}'
@@ -140,9 +125,6 @@ class MarkdownFiles(Directory):
     @property
     def Target_Files(self) -> List[MarkdownFile]:
         return self.__target_files
-    @Target_Files.setter
-    def Target_Files(self, target_files:List[MarkdownFile]) -> None:
-        self.__target_files = target_files
 
     def __str__(self) -> str:
         '''
@@ -167,10 +149,3 @@ class MarkdownFiles(Directory):
             mdfile.convert_md_to_pdf(self.converted_files)
         os.system('clear')
         self.finished_converting()
-
-def main():
-    markdown_files = MarkdownFiles()
-    markdown_files.convert_files()
-
-if __name__ == "__main__":
-    main()

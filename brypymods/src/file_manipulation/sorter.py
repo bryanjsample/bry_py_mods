@@ -6,10 +6,9 @@
             - Getch : pip install getch
 '''
 
-from directory import Directory, get_key_press
+from .directory import Directory
 import os
 from time import sleep
-import sys
 
 class Sorter(Directory):
     '''
@@ -39,18 +38,3 @@ class Sorter(Directory):
     
     def destination_path(self) -> str:
         return f'{self.Directory_Path}/{self.Target_Extension}_files'
-
-def main():
-    extensions = sys.argv[1:]
-    if len(extensions) == 0:
-        extensions = input('Enter a single-space seperated series of extensions to sort: ').split(' ')
-    for extension in extensions:
-        items_to_sort = Sorter(extension)
-        destination = items_to_sort.destination_path()
-        get_key_press(message=f'\nPress enter to move files into {destination} or any other key to quit...\n')
-        items_to_sort.sort_items()
-
-
-
-if __name__ == "__main__":
-    main()

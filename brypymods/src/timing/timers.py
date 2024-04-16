@@ -1,4 +1,4 @@
-from time import time, sleep
+from time import time
 
 def time_it(func):
     def timing(*args, **kwargs):
