@@ -6,4 +6,4 @@ Date: 4/14/24
 '''
 __all__ = ['timers']
 
-from timing.timers import time_it
+from .timers import time_it
