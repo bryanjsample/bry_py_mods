@@ -3,6 +3,7 @@ from sorter import Sorter
 from get_keys import get_key_press
 from items_to_open import ItemsToOpen
 from items_to_move import ItemsToMove
+from screenshot_to_move import ScreenshotToMove
 import sys
 
 def convert_md_to_pdf():
@@ -21,6 +22,10 @@ def open_items():
 def move_items():
     files = ItemsToMove()
     files.move_items()
+
+def move_screenshots():
+    screenies = ScreenshotToMove()
+    screenies.move_items()
 
 def sort_items():
     '''
