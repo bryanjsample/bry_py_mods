@@ -16,7 +16,7 @@ class Sorter(Directory):
         All attributes are inherited from directory.Directory
     '''
     def __init__(self, target_extension:str|list=False) -> None:
-        Directory.__init__(welcome_message_command='move', target_extension=target_extension)
+        Directory.__init__(self, welcome_message_command='move', target_extension=target_extension)
 
     def sort_items(self) -> None:
         '''Move files into their respective sub-directories'''

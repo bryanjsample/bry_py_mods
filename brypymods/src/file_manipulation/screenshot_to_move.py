@@ -7,7 +7,7 @@ class ScreenshotToMove(ItemsToMove):
         target_extension:List[str]=['jpg', 'jpeg', 'png']
         self._desktop_directory = self.locate_desktop()
         os.chdir(self.Desktop_Directory)
-        ScreenshotToMove.__init__(target_extension)
+        ItemsToMove.__init__(self, target_extension)
 
     @property
     def Desktop_Directory(self):

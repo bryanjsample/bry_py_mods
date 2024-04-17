@@ -243,7 +243,7 @@ class Directory():
             acceptable_numbers = self.File_Dict.keys()
             while True:
                 try:
-                    selections = [x for x in input('\nEnter space seperated numbers to choose corresponding file: ').split(' ')]
+                    selections = [x for x in input(f'\nEnter space seperated numbers to {self.WelcomeCommand} corresponding file: ').split(' ')]
                     invalid_values = []
                     valid_files = []
                     for selection in selections:
@@ -263,12 +263,3 @@ class Directory():
                 selections.clear()
         else:
             return [self.Files[0]]
-
-
-
-def main():
-    direct = Directory()
-
-
-if __name__ == "__main__":
-    main()
