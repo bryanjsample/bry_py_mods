@@ -19,6 +19,7 @@ Homepage = "https://github.com/bryanjsample/mypymods"
 [project.scripts]
 ofs = "file_manipulation.commands:open_items"
 sfs = "file_manipulation.commands:sort_items"
+mfs = "file_manipulation.commands:move_items"
 convmd = "file_manipulation.commands:convert_md_to_pdf"
 
 [build-system]
