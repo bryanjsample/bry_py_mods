@@ -26,7 +26,6 @@ class ItemsToOpen(Directory):
                 open_confired = get_key_press(message=f'\nPress enter to open {path} or any other key to continue.', pressed_any_other=False)
                 if open_confired:
                     subprocess.run(['open', '-g', path])
-
         def all_at_once():
             self.Item_Paths.insert(0, 'open')
             subprocess.run(self.Item_Paths)

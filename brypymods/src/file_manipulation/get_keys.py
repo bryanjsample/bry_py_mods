@@ -36,3 +36,23 @@ def get_key_press(message:str='Press enter to continue or any other key to quit.
     print(message)
     key = getch.getch()
     return eval_key_press(key)
+
+def hidden_input(message:str) -> str:
+    hidden_string = ''
+    print(message)
+    while True:
+        hidden_char = getch.getch()
+        if hidden_char == '\n':
+            return hidden_string
+        elif hidden_char == '\x7f':
+            hidden_string = hidden_string[:-1]
+        else:
+            hidden_string += hidden_char
+
+
+def main():
+    string = hidden_input('Tell me your darkest secret: ')
+    print(string)
+
+if __name__ == "__main__":
+    main()
