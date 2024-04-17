@@ -35,32 +35,32 @@ class MarkdownFile():
             - self.Destination_Name : file name of the destination pdf file
             - self.Destination_Path : path to desination pdf file
         '''
-        self.__parent_directory = directory_path
-        self.__target_name = target_name
-        self.__target_path = f'{directory_path}/{target_name}'
-        self.__destination_name = target_name.replace('.md','.pdf')
-        self.__destination_path = f'{directory_path}/{self.Destination_Name}'
+        self._parent_directory = directory_path
+        self._target_name = target_name
+        self._target_path = f'{directory_path}/{target_name}'
+        self._destination_name = target_name.replace('.md','.pdf')
+        self._destination_path = f'{directory_path}/{self.Destination_Name}'
 
 
     @property
     def Parent_Directory(self) -> str:
-        return self. __parent_directory
+        return self. _parent_directory
 
     @property
     def Target_Name(self) -> str:
-        return self.__target_name
+        return self._target_name
 
     @property
     def Target_Path(self) -> str:
-        return self.__target_path
+        return self._target_path
 
     @property
     def Destination_Name(self) -> str:
-        return self.__destination_name
+        return self._destination_name
 
     @property
     def Destination_Path(self) -> str:
-        return self.__destination_path
+        return self._destination_path
 
     def __str__(self):
         return f'File Name : {self.Target_Name}\nParent directory : {self.Parent_Directory}'
@@ -120,11 +120,11 @@ class MarkdownFiles(Directory):
                 mdfiles.convert_files()\n
         '''
         Directory.__init__(self, target_extension='md')
-        self.__target_files:List[MarkdownFile] = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
+        self._target_files:List[MarkdownFile] = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
 
     @property
     def Target_Files(self) -> List[MarkdownFile]:
-        return self.__target_files
+        return self._target_files
 
     def __str__(self) -> str:
         '''

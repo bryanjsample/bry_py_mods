@@ -51,38 +51,38 @@ class Directory():
                 self.File_Dict: dictionary to select one file from many, only needed if there is > 1 file
         '''
         os.system('clear')
-        self.__directory_path:str = os.getcwd()
-        self.__target_extension:str|List[str] = self.check_target_extensions(target_extension)
-        self.__changed_directory:bool = False 
-        self.__files:List[str] = self.parse_directory()
+        self._directory_path:str = os.getcwd()
+        self._target_extension:str|List[str] = self.check_target_extensions(target_extension)
+        self._changed_directory:bool = False 
+        self._files:List[str] = self.parse_directory()
         if len(self.Files) > 1:
-            self.__file_dict:dict = self.form_file_dict()
+            self._file_dict:dict = self.form_file_dict()
 
     @property
     def Directory_Path(self) -> str:
-        return self.__directory_path
+        return self._directory_path
     @Directory_Path.setter
     def Directory_Path(self, new_path:str) -> None:
-        self.__directory_path = new_path
+        self._directory_path = new_path
 
     @property
     def Changed_Directory(self) -> bool:
-        return self.__changed_directory
+        return self._changed_directory
     @Changed_Directory.setter
     def Changed_Directory(self, value:bool) -> None:
-        self.__changed_directory = value
+        self._changed_directory = value
 
     @property
     def Target_Extension(self) -> str|bool:
-        return self.__target_extension
+        return self._target_extension
 
     @property
     def Files(self) -> List[str]:
-        return self.__files
+        return self._files
 
     @property
     def File_Dict(self) -> dict:
-        return self.__file_dict
+        return self._file_dict
 
     def __str__(self) -> str:
         '''
