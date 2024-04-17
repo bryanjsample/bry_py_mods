@@ -160,14 +160,14 @@ class Directory():
             if type(self.Target_Extension) is list: # if a list of extensions is provided
                 file_list = []
                 for extension in self.Target_Extension:
-                    file_list.extend([x for x in os.listdir(self.Directory_Path).sort() if extension == x.split('.')[-1]])
+                    file_list.extend([x for x in os.listdir(self.Directory_Path) if extension == x.split('.')[-1]])
             else: # if only one extension is provided
                 file_list = [x for x in os.listdir(self.Directory_Path) if self.Target_Extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
         else: # if no parameter is provided 
             file_list = os.listdir(self.Directory_Path)
             if get_key_press(message='\nPress enter to list only visible files or any other key to list all files...', pressed_any_other=False):
                 file_list = [x for x in file_list if x[0] != '.']
-        return file_list
+        return sorted(file_list)
 
     def form_file_dict(self, count:int=1) -> dict:
         '''

@@ -45,7 +45,7 @@ class ItemsToMove(Directory):
                 subprocess.run(['mv', path, destination])
                 print(' '.join(['mv', path, destination]))
         os.system('clear')
-        get_key_press(message=f'\nPress enter to open {', '.join(self.Target_Items)} all at once or any other key to open one at a time...', pressed_enter=all_at_once, pressed_any_other=one_at_at_time)
+        get_key_press(message=f'\nPress enter to move {', '.join(self.Target_Items)} ----> {self.Destination_Directory} all at once or any other key to open one at a time...', pressed_enter=all_at_once, pressed_any_other=one_at_at_time)
         os.system('clear')
         print(f'All files successfully moved to {self.Destination_Directory}')
 
