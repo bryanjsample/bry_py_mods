@@ -20,7 +20,7 @@ def open_items():
     items.open_items()
 
 def move_items():
-    files = ItemsToMove()
+    files = ItemsToMove(sys.argv[1:])
     files.move_items()
 
 def move_screenshots():
