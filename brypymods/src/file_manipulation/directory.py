@@ -30,10 +30,10 @@ class Directory():
             - self.File_Dict: dictionary to select one file from many, only needed if there is > 1 file
 
         Example Instantiation:
-            `from directory import Directory
-                directory = Directory('md')
-                target_file:str = directory.choose_one_item()
-                target_files:list = directory.choose_multiple_items()
+            from directory import Directory\n
+                directory = Directory('md')\n
+                target_file:str = directory.choose_one_item()\n
+                target_files:list = directory.choose_multiple_items()\n
     '''
     def __init__(self, welcome_message_command:str, target_extension:str|list=False) -> None:
         '''
