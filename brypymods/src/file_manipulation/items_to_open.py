@@ -1,5 +1,5 @@
-from directory import Directory
-from get_keys import get_key_press
+from file_manipulation.directory import Directory
+from file_manipulation.get_keys import get_key_press
 import os
 import subprocess
 from typing import List

@@ -1,9 +1,9 @@
-from markdown_files import MarkdownFiles
-from sorter import Sorter
-from get_keys import get_key_press
-from items_to_open import ItemsToOpen
-from items_to_move import ItemsToMove
-from screenshot_to_move import ScreenshotToMove
+from file_manipulation.markdown_files import MarkdownFiles
+from file_manipulation.sorter import Sorter
+from file_manipulation.get_keys import get_key_press
+from file_manipulation.items_to_open import ItemsToOpen
+from file_manipulation.items_to_move import ItemsToMove
+from file_manipulation.screenshot_to_move import ScreenshotToMove
 import sys
 
 def convert_md_to_pdf():
