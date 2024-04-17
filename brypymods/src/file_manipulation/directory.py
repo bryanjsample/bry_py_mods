@@ -160,14 +160,13 @@ class Directory():
             if type(self.Target_Extension) is list: # if a list of extensions is provided
                 file_list = []
                 for extension in self.Target_Extension:
-                    file_list.extend([x for x in os.listdir(self.Directory_Path) if extension == x.split('.')[-1]])
+                    file_list.extend([x for x in os.listdir(self.Directory_Path).sort() if extension == x.split('.')[-1]])
             else: # if only one extension is provided
                 file_list = [x for x in os.listdir(self.Directory_Path) if self.Target_Extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
         else: # if no parameter is provided 
             file_list = os.listdir(self.Directory_Path)
             if get_key_press(message='\nPress enter to list only visible files or any other key to list all files...', pressed_any_other=False):
                 file_list = [x for x in file_list if x[0] != '.']
-        file_list.sort()
         return file_list
 
     def form_file_dict(self, count:int=1) -> dict:
@@ -221,7 +220,10 @@ class Directory():
             while True:
                 try:
                     selection = int(input('\nEnter number to choose corresponding file: '))
-                    if selection not in acceptable_numbers:
+                    if selection in ['Q', 'q', 'Quit', 'quit']:
+                        print('\nTerminating...\n')
+                        quit()
+                    elif selection not in acceptable_numbers:
                         get_key_press(message='\nNot an acceptable value. Press enter to retry or any other key to quit...')
                     else:
                         return self.File_Dict[selection]
@@ -240,7 +242,10 @@ class Directory():
                     invalid_values = []
                     valid_files = []
                     for selection in selections:
-                        if int(selection) not in acceptable_numbers:
+                        if selection in ['Q', 'q', 'Quit', 'quit']:
+                            print('\nTerminating...\n')
+                            quit()
+                        elif int(selection) not in acceptable_numbers:
                             invalid_values.append(selection)
                         else:
                             valid_files.append(self.File_Dict[int(selection)])

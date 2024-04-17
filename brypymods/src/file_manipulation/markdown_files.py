@@ -14,7 +14,8 @@ r'''
                     - Unix / Linux / MacOS : "/Users/USERNAME/.local/share/pandoc/templates/"
                     - Windows Vista or later : "C:\Users\USERNAME\AppData\Roaming\pandoc\\templates"
 '''
-from directory import Directory, get_key_press
+from directory import Directory
+from get_keys import get_key_press
 from typing import List
 import subprocess
 import os

@@ -1,7 +1,8 @@
-from file_manipulation.markdown_files import MarkdownFiles
-from file_manipulation.sorter import Sorter
-from file_manipulation.get_keys import get_key_press
-from file_manipulation.items_to_open import ItemsToOpen
+from markdown_files import MarkdownFiles
+from sorter import Sorter
+from get_keys import get_key_press
+from items_to_open import ItemsToOpen
+from items_to_move import ItemsToMove
 import sys
 
 def convert_md_to_pdf():
@@ -16,6 +17,10 @@ def open_items():
     '''
     items = ItemsToOpen(sys.argv[1:])
     items.open_items()
+
+def move_items():
+    files = ItemsToMove()
+    files.move_items()
 
 def sort_items():
     '''
