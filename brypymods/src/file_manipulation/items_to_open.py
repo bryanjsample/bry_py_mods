@@ -1,4 +1,4 @@
-from .directory import Directory, get_key_press
+from directory import Directory, get_key_press
 import os
 import subprocess
 from typing import List

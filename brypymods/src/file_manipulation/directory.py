@@ -10,7 +10,7 @@
 
 import os
 from typing import  List
-from .get_keys import get_key_press
+from get_keys import get_key_press
 
 
 class Directory():
@@ -167,6 +167,7 @@ class Directory():
             file_list = os.listdir(self.Directory_Path)
             if get_key_press(message='\nPress enter to list only visible files or any other key to list all files...', pressed_any_other=False):
                 file_list = [x for x in file_list if x[0] != '.']
+        file_list.sort()
         return file_list
 
     def form_file_dict(self, count:int=1) -> dict:
@@ -188,8 +189,12 @@ class Directory():
             you can decided whether to retry or terminate the script.
             No need to call outside of __init__().
         '''
+        def lint_path(fpath:str) -> str:
+            path_elements = fpath.split('/')
+            valid_elements = [element for element in path_elements if element != '']
+            return f'/{'/'.join(valid_elements)}'
         while True:
-            fpath = input('\nEnter new path to directory or q to quit: ')
+            fpath = lint_path(input('\nEnter new path to directory or q to quit: '))
             if fpath in ['q', 'Q', 'quit', 'Quit', 'exit']:
                 print('\nTerminating...\n')
             else:
