@@ -1,4 +1,4 @@
-# my_modules
+# bry_py_mods
 
 [**TestPyPI Page**](https://test.pypi.org/project/brypymods/)
 
