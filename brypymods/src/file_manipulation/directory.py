@@ -35,7 +35,7 @@ class Directory():
                 target_file:str = directory.choose_one_item()
                 target_files:list = directory.choose_multiple_items()
     '''
-    def __init__(self, target_extension:str|list=False) -> None:
+    def __init__(self, welcome_message_command:str, target_extension:str|list=False) -> None:
         '''
             1. Clear stdout
             2. Obtain cwd path and set self.Directory_Path
@@ -52,6 +52,7 @@ class Directory():
         '''
         os.system('clear')
         self._directory_path:str = os.getcwd()
+        self._welcome_message_command:str = welcome_message_command
         self._target_extension:str|List[str] = self.check_target_extensions(target_extension)
         self._changed_directory:bool = False 
         self._files:List[str] = self.parse_directory()
@@ -71,6 +72,10 @@ class Directory():
     @Changed_Directory.setter
     def Changed_Directory(self, value:bool) -> None:
         self._changed_directory = value
+
+    @property
+    def WelcomeCommand(self) -> str:
+        return self._welcome_message_command
 
     @property
     def Target_Extension(self) -> str|bool:
@@ -109,7 +114,7 @@ class Directory():
                     if i not in valid_extensions:
                         print(f'\n{i} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
                         quit()
-                print(f'\nSearching for {', '.join(extensions)} files inside of {self.Directory_Path}...')
+                print(f'\nSearching for {', '.join(extensions)} files to {self.WelcomeCommand} inside of {self.Directory_Path}...')
                 return extensions
             else:
                 extension = target_extension.lower().replace('.', '')
@@ -120,10 +125,10 @@ class Directory():
                     print(f'\n{extension} is not a valid extenstion. Please adjust your instantiation arguments and try again.\n\nTerminating...\n')
                     quit()
                 else:
-                    print(f'\nSearching for {extension} files inside of {self.Directory_Path}...')
+                    print(f'\nSearching for {extension} files to {self.WelcomeCommand} inside of {self.Directory_Path}...')
                     return extension
         else:
-            print(f'\nSearching for all files inside of {self.Directory_Path}...')
+            print(f'\nSearching for all files to {self.WelcomeCommand} inside of {self.Directory_Path}...')
             return False
 
     def parse_directory(self) -> List[str]:

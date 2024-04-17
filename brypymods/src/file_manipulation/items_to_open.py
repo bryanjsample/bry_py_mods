@@ -9,7 +9,7 @@ class ItemsToOpen(Directory):
     
     '''
     def __init__(self, target_extension:bool | str=False):
-        Directory.__init__(self, target_extension)
+        Directory.__init__(welcome_message_command='move', target_extension=target_extension)
         self._target_items:List[str] = self.choose_multiple_items()
         self._item_paths:List[str] = [f'{self.Directory_Path}/{item_name}' for item_name in self.Target_Items]
 

@@ -120,7 +120,7 @@ class MarkdownFiles(Directory):
                 mdfiles = MarkdownFiles()\n
                 mdfiles.convert_files()\n
         '''
-        Directory.__init__(self, target_extension='md')
+        Directory.__init__(welcome_message_command='move', target_extension='md')
         self._target_files:List[MarkdownFile] = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
 
     @property

@@ -6,8 +6,8 @@ import subprocess
 import os
 
 class ItemsToMove(Directory):
-    def __init__(self, target_extension: str | list = False) -> None:
-        super().__init__(target_extension)
+    def __init__(self, target_extension:str|list=False) -> None:
+        Directory.__init__(welcome_message_command='move', target_extension=target_extension)
         self._target_items:List[str] = self.choose_multiple_items()
         self._target_paths:List[str] = [f'{self.Directory_Path}/{item_name}' for item_name in self.Target_Items]
         self._destination_directory:str = self.input_new_file_path()
