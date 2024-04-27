@@ -1,6 +1,6 @@
 [project]
 name = "brypymods"
-version = "2024.4.17.6"
+version = "2024.4.27.0"
 authors = [
     {name="Bryan Sample", email="bryanjsample@gmail.com"}
 ]
