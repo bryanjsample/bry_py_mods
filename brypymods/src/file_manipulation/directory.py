@@ -114,7 +114,7 @@ class Directory():
                     if i not in valid_extensions:
                         print(f'\n{i} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
                         quit()
-                print(f'\nSearching for {', '.join(extensions)} files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
+                print(f'Searching for {', '.join(extensions)} files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
                 return extensions
             else:
                 extension = target_extension.lower().replace('.', '')
@@ -122,13 +122,13 @@ class Directory():
                     print('\nTerminating...\n')
                     quit()
                 if extension not in valid_extensions:
-                    print(f'\n{extension} is not a valid extenstion. Please adjust your arguments and try again.\n\nTerminating...\n')
+                    print(f'{extension} is not a valid extenstion. Please adjust your arguments and try again.\n\nTerminating...\n')
                     quit()
                 else:
-                    print(f'\nSearching for {extension} files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
+                    print(f'Searching for {extension} files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
                     return extension
         else:
-            print(f'\nSearching for all files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
+            print(f'Searching for all files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
             return False
 
     def parse_directory(self) -> List[str]:
@@ -142,18 +142,18 @@ class Directory():
         '''
         extension_name = self.Target_Extension
         if not extension_name: # if extension is not provided
-            extension_name = '*'
+            extension_name = '* all extensions *'
         file_list = self.list_files()
         if len(file_list) == 0:
-            get_key_press(message='\nNo matching files found in the current working directory.\n\n    ENTER : input a custom file-path\n    ANY OTHER KEY : quit...')
+            get_key_press(message='No matching files found in the current working directory.\n\n    ENTER : input a custom file-path\n    ANY OTHER KEY : quit...')
             new_path = self.input_new_file_path()
             if new_path:
                 self.Changed_Directory = True
                 file_list = self.reset_directory_attributes(new_path)
         elif len(file_list) == 1:
-            get_key_press(message=f'\nThere is only one {extension_name} file in the directory \n\n    {file_list[0]}\n\n    ENTER : continue with file\n    ANY OTHER KEY : quit...')
+            get_key_press(message=f'There is only one file in the directory \n\n    {file_list[0]}\n\n    ENTER : continue with file\n    ANY OTHER KEY : quit...')
         else:
-            print(f'\nThere is more than one {extension_name} file in the current working directory:\n')
+            print(f'There is more than one file in the current working directory:\n')
         return file_list
 
     def list_files(self) -> List[str]:
@@ -170,8 +170,9 @@ class Directory():
                 file_list = [x for x in os.listdir(self.Directory_Path) if self.Target_Extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
         else: # if no parameter is provided 
             file_list = os.listdir(self.Directory_Path)
-            if get_key_press(message='\n\n    ENTER : list non-hidden items only\n    ANY OTHER KEY : list all items', pressed_any_other=False):
+            if get_key_press(message='\n    ENTER : list non-hidden items only\n    ANY OTHER KEY : list all items', pressed_any_other=False):
                 file_list = [x for x in file_list if x[0] != '.']
+        os.system('clear')
         return sorted(file_list)
 
     def form_file_dict(self, count:int=1) -> dict:
@@ -250,12 +251,16 @@ class Directory():
                         if selection in ['Q', 'q', 'Quit', 'quit']:
                             print('\nTerminating...\n')
                             quit()
+                        elif selection == ' ':
+                            continue
                         elif int(selection) not in acceptable_numbers:
                             invalid_values.append(selection)
                         else:
                             valid_files.append(self.File_Dict[int(selection)])
                     if len(invalid_values) > 0:
                         get_key_press(message=f'{', '.join(invalid_values)} are not acceptable values.\n\n    ENTER : retry \n    ANY OTHER KEY : quit...')
+                    elif len(valid_files) == 0:
+                        return False
                     else:
                         return valid_files
                 except ValueError:

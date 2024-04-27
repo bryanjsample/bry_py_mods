@@ -5,6 +5,7 @@ from file_manipulation.items_to_open import ItemsToOpen
 from file_manipulation.items_to_move import ItemsToMove
 from file_manipulation.screenshot_to_move import ScreenshotToMove
 import sys
+import os
 
 def convert_md_to_pdf():
     '''Looks for markdown files in the current directory, and allows you to choose one or more. Once items are selected, they will be converted to a pdf.'''
@@ -34,9 +35,10 @@ def sort_items():
     '''
     extensions = sys.argv[1:]
     if len(extensions) == 0:
-        extensions = input('Enter a single-space seperated series of extensions to sort: ').split(' ')
+        extensions = input('No extensions have been provided to sort!\n\n    Enter a single-space seperated series of extensions: ').split(' ')
+    os.system('clear')
     for extension in extensions:
         items_to_sort = Sorter(extension)
         destination = items_to_sort.destination_path()
-        get_key_press(message=f'\nPress enter to move files into {destination} or any other key to quit...\n')
+        get_key_press(message=f'Attempting to move files into {destination}\n\n ENTER : move files\n    ANY OTHER KEY : quit...\n')
         items_to_sort.sort_items()
