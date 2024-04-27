@@ -33,19 +33,20 @@ class ItemsToMove(Directory):
     def move_items(self):
         def one_at_at_time():
             for indx, path in enumerate(self.Target_Paths):
-                destination = self.Destination_Paths[indx]
-                open_confired = get_key_press(message=f'\nAttempting to move {path} ----> {destination}...\n\n    ENTER :  move file\n    ANY OTHER KEY : continue without moving file', pressed_any_other=False)
-                if open_confired:
-                    subprocess.run(['mv', path, destination])
-                    sleep(1)
                 os.system('clear')
+                destination = self.Destination_Paths[indx]
+                move_confirmed = get_key_press(message=f'Attempting to move {path.split('/')[-1]} ----> {destination}...\n\n    ENTER :  move file\n    ANY OTHER KEY : continue without moving file', pressed_any_other=False)
+                if move_confirmed:
+                    subprocess.check_call(['mv', path, destination])
+                    print(f'\nMoved {path} ----> {destination}')
+                    sleep(1)
         def all_at_once():
             for indx, path in enumerate(self.Target_Paths):
                 destination = self.Destination_Paths[indx]
-                subprocess.run(['mv', path, destination])
+                subprocess.check_call(['mv', path, destination])
                 print(' '.join(['mv', path, destination]))
         os.system('clear')
-        get_key_press(message=f'Attempting to move :\n\n  {',\n   '.join(self.Target_Items)} ----> {self.Destination_Directory}\n\n ENTER: move all files at once\n    ANY OTHER KEY : move files one at a time...', pressed_enter=all_at_once, pressed_any_other=one_at_at_time)
+        get_key_press(message=f'Attempting to move :\n\n      {',\n       '.join(self.Target_Items)} ----> {self.Destination_Directory}\n\n ENTER: move all files at once\n    ANY OTHER KEY : move files one at a time...', pressed_enter=all_at_once, pressed_any_other=one_at_at_time)
         os.system('clear')
         print(f'All files successfully moved to {self.Destination_Directory}')
 

@@ -77,7 +77,7 @@ class MarkdownFile():
         '''
             Open pdf file in preview.
         '''
-        subprocess.run(['open', self.Destination_Path])
+        subprocess.run(['open', '-g', self.Destination_Path])
         os.system('clear')
 
     def convert_single_md_to_pdf(self, converted_files:dict) -> None:
