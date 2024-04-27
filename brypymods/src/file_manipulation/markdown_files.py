@@ -80,7 +80,7 @@ class MarkdownFile():
         subprocess.run(['open', self.Destination_Path])
         os.system('clear')
 
-    def convert_md_to_pdf(self, converted_files:dict) -> None:
+    def convert_single_md_to_pdf(self, converted_files:dict) -> None:
         '''Convert target markdown file to a pdf of the same name.'''
         os.system('clear')
         conversion_string = self.confirm_conversion()
@@ -91,6 +91,12 @@ class MarkdownFile():
         open_confirmed = get_key_press(message=f'\n\nFinished converting {self.Destination_Name}. Press enter to open or any other key to continue...\n', pressed_enter=True, pressed_any_other=False)
         if open_confirmed:
             self.open_pdf_file()
+    
+    def convert_all_md_to_pdf(self, converted_files:dict) -> None:
+        '''Convert target markdown file to a pdf of the same name.'''
+        print(f'\nConverting {self.Target_Name} ----> {self.Destination_Name}')
+        self.conversion(converted_files)
+        print(f'Finished converting {self.Destination_Name}')
 
     def conversion(self, converted_files:dict) -> None:
         try:
@@ -121,11 +127,15 @@ class MarkdownFiles(Directory):
                 mdfiles.convert_files()\n
         '''
         Directory.__init__(self, welcome_message_command='convert', target_extension='md')
-        self._target_files:List[MarkdownFile] = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
+        self._target_files:List[MarkdownFile]
 
     @property
     def Target_Files(self) -> List[MarkdownFile]:
         return self._target_files
+    
+    @Target_Files.setter
+    def Target_Files(self, list_files) -> None:
+        self._target_files = list_files
 
     def __str__(self) -> str:
         '''
@@ -146,7 +156,15 @@ class MarkdownFiles(Directory):
 
     def convert_files(self) -> None:
         self.converted_files:dict = {}
-        for mdfile in self.Target_Files:
-            mdfile.convert_md_to_pdf(self.converted_files)
+        convert_one_at_a_time = get_key_press(message='\nPress enter to convert files all at once or any other key to convert one at a time.', pressed_enter=False, pressed_any_other=True)
+        if convert_one_at_a_time:
+            self.Target_Files = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
+            for mdfile in self.Target_Files:
+                mdfile.convert_single_md_to_pdf(self.converted_files)
+        elif not convert_one_at_a_time:
+            os.system('clear')
+            self.Target_Files = [MarkdownFile(x, self.Directory_Path) for x in self.Files]
+            for mdfile in self.Target_Files:
+                mdfile.convert_all_md_to_pdf(self.converted_files)
         os.system('clear')
         self.finished_converting()
