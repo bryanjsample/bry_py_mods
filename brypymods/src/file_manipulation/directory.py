@@ -106,7 +106,7 @@ class Directory():
             Correct any minor mistakes made within target_extension argument. If any arguments are invalid, then execution will be terminated.
             No need to call outside of __init__().
         '''
-        valid_extensions = ['pdf', 'md', 'jpg', 'jpeg', 'svg', 'gif', 'html', 'xls', 'docx', 'png', 'doc', 'avi', 'fnt', 'txt', 'xml', 'csv', 'tiff', 'tif', 'exe']
+        valid_extensions = ['pdf', 'md', 'jpg', 'jpeg', 'svg', 'gif', 'html', 'xls', 'docx', 'png', 'doc', 'avi', 'fnt', 'txt', 'xml', 'csv', 'tiff', 'tif', 'exe', 'py', 'c', 'css']
         if target_extension:
             if type(target_extension) is list:
                 extensions = [x.lower().replace('.', '') for x in target_extension]
@@ -114,7 +114,7 @@ class Directory():
                     if i not in valid_extensions:
                         print(f'\n{i} is not a valid extenstion. Please adjust your instantiation arguments and try again.\nTerminating...\n')
                         quit()
-                print(f'\nSearching for {', '.join(extensions)} files to {self.WelcomeCommand} inside of {self.Directory_Path}...')
+                print(f'\nSearching for {', '.join(extensions)} files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
                 return extensions
             else:
                 extension = target_extension.lower().replace('.', '')
@@ -122,13 +122,13 @@ class Directory():
                     print('\nTerminating...\n')
                     quit()
                 if extension not in valid_extensions:
-                    print(f'\n{extension} is not a valid extenstion. Please adjust your instantiation arguments and try again.\n\nTerminating...\n')
+                    print(f'\n{extension} is not a valid extenstion. Please adjust your arguments and try again.\n\nTerminating...\n')
                     quit()
                 else:
-                    print(f'\nSearching for {extension} files to {self.WelcomeCommand} inside of {self.Directory_Path}...')
+                    print(f'\nSearching for {extension} files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
                     return extension
         else:
-            print(f'\nSearching for all files to {self.WelcomeCommand} inside of {self.Directory_Path}...')
+            print(f'\nSearching for all files to {self.WelcomeCommand} inside of {self.Directory_Path.split('/')[-1]}...')
             return False
 
     def parse_directory(self) -> List[str]:
@@ -145,13 +145,13 @@ class Directory():
             extension_name = '*'
         file_list = self.list_files()
         if len(file_list) == 0:
-            get_key_press(message='\nNo matching files found in the current working directory. Press enter to input a custom file-path or any other key to quit...')
+            get_key_press(message='\nNo matching files found in the current working directory.\n\n    ENTER : input a custom file-path\n    ANY OTHER KEY : quit...')
             new_path = self.input_new_file_path()
             if new_path:
                 self.Changed_Directory = True
                 file_list = self.reset_directory_attributes(new_path)
         elif len(file_list) == 1:
-            get_key_press(message=f'\nThere is only one {extension_name} file in the directory \n\n    {file_list[0]}\n\nPress enter to continue or any other key to quit...')
+            get_key_press(message=f'\nThere is only one {extension_name} file in the directory \n\n    {file_list[0]}\n\n    ENTER : continue with file\n    ANY OTHER KEY : quit...')
         else:
             print(f'\nThere is more than one {extension_name} file in the current working directory:\n')
         return file_list
@@ -170,7 +170,7 @@ class Directory():
                 file_list = [x for x in os.listdir(self.Directory_Path) if self.Target_Extension == x.split('.')[-1]] # list of files in cwd if extension == target extenstion
         else: # if no parameter is provided 
             file_list = os.listdir(self.Directory_Path)
-            if get_key_press(message='\nPress enter to list only visible files or any other key to list all files...', pressed_any_other=False):
+            if get_key_press(message='\n\n    ENTER : list non-hidden items only\n    ANY OTHER KEY : list all items', pressed_any_other=False):
                 file_list = [x for x in file_list if x[0] != '.']
         return sorted(file_list)
 
@@ -205,7 +205,7 @@ class Directory():
                 try:
                     os.listdir(fpath)
                 except FileNotFoundError:
-                    get_key_press(message='\nDirectory path not found. Press enter to retry or any other key to quit...')
+                    get_key_press(message='\nDirectory path not found.\n\n    ENTER : retry entering new path\n    ANY OTHER KEY : quit...')
                 else:
                     return fpath
 
@@ -229,11 +229,11 @@ class Directory():
                         print('\nTerminating...\n')
                         quit()
                     elif selection not in acceptable_numbers:
-                        get_key_press(message='\nNot an acceptable value. Press enter to retry or any other key to quit...')
+                        get_key_press(message='\nNot an acceptable value.\n\n    ENTER : retry\n    ANY OTHER KEY : quit...')
                     else:
                         return self.File_Dict[selection]
                 except ValueError:
-                    get_key_press(message='\nNot an acceptable value. Press enter to retry or any other key to quit...')
+                    get_key_press(message='\nNot an acceptable value.\n\n    ENTER : retry\n    ANY OTHER KEY : quit...')
         else:
             return [self.Files[0]]
 
@@ -255,11 +255,11 @@ class Directory():
                         else:
                             valid_files.append(self.File_Dict[int(selection)])
                     if len(invalid_values) > 0:
-                        get_key_press(message=f'{', '.join(invalid_values)} are not acceptable values. Press enter to retry or any other key to quit...')
+                        get_key_press(message=f'{', '.join(invalid_values)} are not acceptable values.\n\n    ENTER : retry \n    ANY OTHER KEY : quit...')
                     else:
                         return valid_files
                 except ValueError:
-                    get_key_press(message='\nNot an acceptable list of values. Press enter to retry or any other key to quit...')
+                    get_key_press(message='\nNot an acceptable list of values.\n\n    ENTER : retry\n    ANY OTHER KEY : quit...')
                 selections.clear()
         else:
             return [self.Files[0]]
