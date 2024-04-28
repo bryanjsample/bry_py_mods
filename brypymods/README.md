@@ -21,6 +21,7 @@
 - `$ convmd`
   - Looks for markdown files in the current directory, and allows you to choose all of them or only select files.
   - Once items are selected, they will be converted to a pdf.
+  - You will have the option to sort the files into directories after conversion is completed
 
 #### EXTERNAL DEPENDENCIES
 
@@ -58,8 +59,12 @@
            - Windows Vista or later : `C:\Users\USERNAME\AppData\Roaming\pandoc\templates`
   - [sorter.py](brypymods/src/file_manipulation/sorter.py)
     - Child of Directory. Allows the user to sort items into sub-directories based on their extension.
-  - [items_to_open.py](/python_modules/file_manipulation/open_markup_file.py)
+  - [items_to_open.py](/python_modules/file_manipulation/items_to_open.py)
     - Child of Directory. Allows the user to open items based on their extension.
+  - [items_to_move.py](/python_modules/file_manipulation/items_to_move.py)
+    - Child of Directory. Allows the user to move items based on their extension.
+  - [screenshot_to_move.py](/python_modules/file_manipulation/screenshot_to_move.py)
+    - Child of ItemsToMove. Allows the user to move screenshots from the desktop to a specified directory.
 - [**Timing**](/python_modules/timing/)
   - [timers.py](/python_modules/timing/timers.py)
     - Contains decorator function time_it() to measure execution / failure times
