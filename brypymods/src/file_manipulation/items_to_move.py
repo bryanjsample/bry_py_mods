@@ -30,8 +30,9 @@ class ItemsToMove(Directory):
         return self._destination_paths
     
 
-    def move_items(self):
+    def move_items(self) -> List[str]:
         def one_at_at_time():
+            moved_files:List[str] = []
             for indx, path in enumerate(self.Target_Paths):
                 os.system('clear')
                 destination = self.Destination_Paths[indx]
@@ -39,16 +40,25 @@ class ItemsToMove(Directory):
                 if move_confirmed:
                     subprocess.check_call(['mv', path, destination])
                     print(f'\nMoved {path} ----> {destination}')
+                    moved_files.append(path.split('/')[-1])
                     sleep(1)
-        def all_at_once():
+            return moved_files
+        def all_at_once() -> False:
             for indx, path in enumerate(self.Target_Paths):
                 destination = self.Destination_Paths[indx]
                 subprocess.check_call(['mv', path, destination])
                 print(' '.join(['mv', path, destination]))
+            return False
         os.system('clear')
-        get_key_press(message=f'Attempting to move :\n\n      {',\n      '.join(self.Target_Items)}\n {' '*(max([len(x) for x in self.Target_Items])+7)}----> {self.Destination_Directory}\n\n    ENTER: move all files at once\n    ANY OTHER KEY : move files one at a time...', pressed_enter=all_at_once, pressed_any_other=one_at_at_time)
+        moved_files = get_key_press(message=f'Attempting to move :\n\n      {',\n      '.join(self.Target_Items)}\n {' '*(max([len(x) for x in self.Target_Items])+7)}----> {self.Destination_Directory}\n\n    ENTER: move all files at once\n    ANY OTHER KEY : move files one at a time...', pressed_enter=all_at_once, pressed_any_other=one_at_at_time)
         os.system('clear')
-        print(f'All files successfully moved to {self.Destination_Directory}')
+        if type(moved_files) is list:
+            if len(moved_files) > 0:
+                print(f'Successfully moved {', '.join(moved_files)}')
+            else:
+                [print('Did not move any files.')]
+        else:
+            print('All files successfully moved.')
 
 
 def main():

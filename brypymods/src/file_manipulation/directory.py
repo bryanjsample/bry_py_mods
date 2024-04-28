@@ -9,7 +9,7 @@
 '''
 
 import os
-from typing import  List
+from typing import List, Dict
 from file_manipulation.get_keys import get_key_press
 
 
@@ -57,7 +57,7 @@ class Directory():
         self._changed_directory:bool = False 
         self._files:List[str] = self.parse_directory()
         if len(self.Files) > 1:
-            self._file_dict:dict = self.form_file_dict()
+            self._file_dict:Dict[int, str] = self.form_file_dict()
         if not echo_dir_contents_at_init:
             os.system('clear')
 
@@ -88,7 +88,7 @@ class Directory():
         return self._files
 
     @property
-    def File_Dict(self) -> dict:
+    def File_Dict(self) -> Dict[int, str]:
         return self._file_dict
 
     def __str__(self) -> str:
@@ -177,18 +177,23 @@ class Directory():
         os.system('clear')
         return sorted(file_list)
 
-    def form_file_dict(self, count:int=1) -> dict:
+    def form_file_dict(self, count:int=1) -> Dict[int,str]:
         '''
             Form a dictionary containing all target files as values and an associated integer as the key and returns it.
             No need to call outside of __init__().
         '''
-        file_dict = {}
+        file_dict:Dict[int,str] = {}
         for f in self.Files:
             if file_dict.get(count, 'DNE') == 'DNE':
                 file_dict[count] = f
-                print(f'{count: >{4+len(str(len(self.Files)))}} : {f}') 
                 count += 1
         return file_dict
+    
+    def display_file_dict(self, file_dict:Dict[int,str]|bool=False) -> None:
+        if not file_dict:
+            file_dict = self.File_Dict
+        for count, f in file_dict.items():
+            print(f'{count: >{4+len(str(len(self.Files)))}} : {f}') 
 
     def input_new_file_path(self) -> str:
         '''
@@ -226,8 +231,10 @@ class Directory():
         if len(self.Files) > 1:
             acceptable_numbers = self.File_Dict.keys()
             while True:
+                os.system('clear')
+                self.display_file_dict()
                 try:
-                    selection = int(input('\nEnter number to choose corresponding file: ').strip())
+                    selection = int(input(f'\nEnter number to {self.WelcomeCommand} corresponding file: ').strip())
                     if selection in ['Q', 'q', 'Quit', 'quit']:
                         print('\nTerminating...\n')
                         quit()
@@ -245,6 +252,8 @@ class Directory():
         if len(self.Files) > 1:
             acceptable_numbers = self.File_Dict.keys()
             while True:
+                os.system('clear')
+                self.display_file_dict()
                 try:
                     selections = [x for x in input(f'\nEnter space seperated numbers to {self.WelcomeCommand} corresponding file: ').split(' ')]
                     invalid_values = []
