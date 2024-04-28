@@ -10,8 +10,16 @@
 - `$ sfs "extension", "extension", ...`
   - Will list all items in the current directory with the listed extensions. If no arguments are provided, then an option will be given to show only unhidden items or all items.
   - Once items are selected, they will be sorted into sub-directories based on their extension.
+- `$ mfs "extension", "extension", ...`
+  - Will list all items in the current directory with the listed extensions. If no arguments are provided, then an option will be given to show only unhidden items or all items.
+  - Once items are selected, user will be prompted to input an existing directory path to move items into.
+  - You can choose whether to move the items all at once or individually
+- `$ mscr`
+  - Inherits attributes from ItemsToMove class (used in mfs command)
+  - Looks for png, jpg, or jpeg files in the DESKTOP directory
+  - Operates identically to mfs
 - `$ convmd`
-  - Looks for markdown files in the current directory, and allows you to choose one or more.
+  - Looks for markdown files in the current directory, and allows you to choose all of them or only select files.
   - Once items are selected, they will be converted to a pdf.
 
 #### EXTERNAL DEPENDENCIES

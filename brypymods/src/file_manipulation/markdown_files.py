@@ -17,6 +17,7 @@ r'''
 from file_manipulation.directory import Directory
 from file_manipulation.get_keys import get_key_press
 from typing import List
+from time import sleep
 import subprocess
 import os
 
@@ -70,8 +71,11 @@ class MarkdownFile():
         '''Confirm with enter key before converting.'''
         conversion_string = f'Attempting to convert {self.Target_Name}  ---->  {self.Destination_Name}...'
         print(conversion_string)
-        get_key_press(message=f'\n\n    ENTER : convert file to pdf\n    ANY OTHER KEY : quit')
-        return conversion_string
+        confirmed = get_key_press(message=f'\n\n    ENTER : convert file to pdf\n    ANY OTHER KEY : continue without converting', pressed_enter=True, pressed_any_other=False)
+        if confirmed:
+            return conversion_string
+        else:
+            return False
 
     def open_pdf_file(self) -> None:
         '''
@@ -84,11 +88,11 @@ class MarkdownFile():
         '''Convert target markdown file to a pdf of the same name.'''
         os.system('clear')
         conversion_string = self.confirm_conversion()
-        os.system('clear')
-        print('\n\n', f'{conversion_string:^50}'.replace('Attempting to convert', 'Converting'))
+        if not conversion_string:
+            return
+        print(f'\n{conversion_string:^50}'.replace('Attempting to convert', 'Converting'))
         self.conversion(converted_files)
-        os.system('clear')
-        open_confirmed = get_key_press(message=f'Finished converting {self.Destination_Name}.\n\n    ENTER : open pdf\n    ANY OTHER KEY : continue\n', pressed_enter=True, pressed_any_other=False)
+        open_confirmed = get_key_press(message=f'\nFinished converting {self.Destination_Name}.\n\n    ENTER : open pdf\n    ANY OTHER KEY : continue without opening\n', pressed_enter=True, pressed_any_other=False)
         if open_confirmed:
             self.open_pdf_file()
     
@@ -110,7 +114,7 @@ class MarkdownFiles(Directory):
         Converts one or more Markdown Files to PDF using pandoc after inheriting attributes
         from directory.py's Directory class.
     '''
-    def __init__(self):
+    def __init__(self, echo_dir_contents_at_init:bool=True):
         '''Inherit properties from directory and obtain list of target markdown file objects.
 
             Properties
@@ -126,7 +130,7 @@ class MarkdownFiles(Directory):
                 mdfiles = MarkdownFiles()\n
                 mdfiles.convert_files()\n
         '''
-        Directory.__init__(self, welcome_message_command='convert', target_extension='md')
+        Directory.__init__(self, welcome_message_command='convert', target_extension='md', echo_dir_contents_at_init=echo_dir_contents_at_init)
         self._target_files:List[MarkdownFile]
 
     @property
@@ -147,17 +151,17 @@ class MarkdownFiles(Directory):
     def finished_converting(self) -> None:
         '''Once finished converting, print all files that successfully converted'''
         if len(self.converted_files.keys()) == 0:
-            print('\nNo md were converted.\n')
+            print('No md were converted.\n')
         else:
-            tar_width = len(max(self.converted_files.keys()))
-            print(f'\nFinished processing all md files in {self.Directory_Path}.\n')
+            tar_width = max([len(x) for x in self.converted_files.keys()])
+            print(f'Finished processing all md files in {self.Directory_Path}.\n')
             for target, destination in self.converted_files.items():
                 print(f'    {target:>{tar_width}} ----> {destination}')
 
     def convert_files(self) -> None:
         self.converted_files:dict = {}
-        os.system('clear')
-        convert_one_at_a_time = get_key_press(message='Attempting to convert markdown files in the current directory to pdf format...\n\n    ENTER : converts all md files\n    ANY OTHER KEY : converts only select md files one at a time', pressed_enter=False, pressed_any_other=True)
+        # os.system('clear')
+        convert_one_at_a_time = get_key_press(message='\nAttempting to convert markdown files to pdf format...\n\n    ENTER : converts all md files\n    ANY OTHER KEY : converts only select md files one at a time', pressed_enter=False, pressed_any_other=True)
         if convert_one_at_a_time:
             self.Target_Files = [MarkdownFile(x, self.Directory_Path) for x in self.choose_multiple_items()]
             for mdfile in self.Target_Files:

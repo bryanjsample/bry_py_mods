@@ -35,7 +35,7 @@ class Directory():
                 target_file:str = directory.choose_one_item()\n
                 target_files:list = directory.choose_multiple_items()\n
     '''
-    def __init__(self, welcome_message_command:str, target_extension:str|list=False) -> None:
+    def __init__(self, welcome_message_command:str, target_extension:str|list=False, echo_dir_contents_at_init:bool=True) -> None:
         '''
             1. Clear stdout
             2. Obtain cwd path and set self.Directory_Path
@@ -58,6 +58,8 @@ class Directory():
         self._files:List[str] = self.parse_directory()
         if len(self.Files) > 1:
             self._file_dict:dict = self.form_file_dict()
+        if not echo_dir_contents_at_init:
+            os.system('clear')
 
     @property
     def Directory_Path(self) -> str:
@@ -225,7 +227,7 @@ class Directory():
             acceptable_numbers = self.File_Dict.keys()
             while True:
                 try:
-                    selection = int(input('\nEnter number to choose corresponding file: '))
+                    selection = int(input('\nEnter number to choose corresponding file: ').strip())
                     if selection in ['Q', 'q', 'Quit', 'quit']:
                         print('\nTerminating...\n')
                         quit()
@@ -251,7 +253,7 @@ class Directory():
                         if selection in ['Q', 'q', 'Quit', 'quit']:
                             print('\nTerminating...\n')
                             quit()
-                        elif selection == ' ':
+                        elif selection == '':
                             continue
                         elif int(selection) not in acceptable_numbers:
                             invalid_values.append(selection)

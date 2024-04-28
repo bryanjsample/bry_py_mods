@@ -15,8 +15,8 @@ class Sorter(Directory):
         Class to sort files into their own sub-directories based on their extension.
         All attributes are inherited from directory.Directory
     '''
-    def __init__(self, target_extension:str|list=False) -> None:
-        Directory.__init__(self, welcome_message_command='move', target_extension=target_extension)
+    def __init__(self, target_extension:str|list=False, echo_dir_contents_at_init:bool=True) -> None:
+        Directory.__init__(self, welcome_message_command='move', target_extension=target_extension, echo_dir_contents_at_init=echo_dir_contents_at_init)
 
     def sort_items(self) -> None:
         '''Move files into their respective sub-directories'''
@@ -25,8 +25,8 @@ class Sorter(Directory):
             os.mkdir(destination)
         for file in self.Files:
             os.rename(f'{self.Directory_Path}/{file}', f'{destination}/{file}')
-        print(f'Moved all {self.Target_Extension} files.\n')
-        sleep(1)
+        print(f'Moved all {self.Target_Extension} files  ----> {'/'.join(destination.split('/')[-2:])}.')
+        sleep(2)
 
     def directory_does_not_exist(self) -> bool:
         '''If directories exist, great! If not, make them.'''

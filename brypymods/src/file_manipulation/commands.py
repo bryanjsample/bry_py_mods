@@ -11,6 +11,12 @@ def convert_md_to_pdf():
     '''Looks for markdown files in the current directory, and allows you to choose one or more. Once items are selected, they will be converted to a pdf.'''
     markdown_files = MarkdownFiles()
     markdown_files.convert_files()
+    sort_files = get_key_press(message="\nAttempting to sort md and pdf files into directories...\n\n    ENTER : sort files\n    ANY OTHER KEY : quit...")
+    if sort_files:
+        extensions = ['md', 'pdf']
+        for extension in extensions:
+            items_to_sort = Sorter(extension, echo_dir_contents_at_init=False)
+            items_to_sort.sort_items()
 
 def open_items():
     '''
@@ -40,5 +46,5 @@ def sort_items():
     for extension in extensions:
         items_to_sort = Sorter(extension)
         destination = items_to_sort.destination_path()
-        get_key_press(message=f'Attempting to move files into {destination}\n\n ENTER : move files\n    ANY OTHER KEY : quit...\n')
+        get_key_press(message=f'Attempting to move files into {destination}\n\n    ENTER : move files\n    ANY OTHER KEY : quit...\n')
         items_to_sort.sort_items()
