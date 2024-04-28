@@ -46,7 +46,7 @@ class ItemsToMove(Directory):
                 subprocess.check_call(['mv', path, destination])
                 print(' '.join(['mv', path, destination]))
         os.system('clear')
-        get_key_press(message=f'Attempting to move :\n\n      {',\n       '.join(self.Target_Items)} ----> {self.Destination_Directory}\n\n ENTER: move all files at once\n    ANY OTHER KEY : move files one at a time...', pressed_enter=all_at_once, pressed_any_other=one_at_at_time)
+        get_key_press(message=f'Attempting to move :\n\n      {',\n      '.join(self.Target_Items)}\n {' '*(max([len(x) for x in self.Target_Items])+7)}----> {self.Destination_Directory}\n\n    ENTER: move all files at once\n    ANY OTHER KEY : move files one at a time...', pressed_enter=all_at_once, pressed_any_other=one_at_at_time)
         os.system('clear')
         print(f'All files successfully moved to {self.Destination_Directory}')
 
