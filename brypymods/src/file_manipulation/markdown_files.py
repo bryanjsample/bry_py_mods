@@ -104,7 +104,7 @@ class MarkdownFile():
 
     def conversion(self, converted_files:dict) -> None:
         try:
-            subprocess.check_call(['pandoc', self.Target_Path, '-o', self.Destination_Path, '--from', 'markdown', '--template', 'eisvogel', '--listings'])
+            subprocess.check_call(['pandoc', self.Target_Path, '-o', self.Destination_Path, '--from', 'markdown', '--template', 'eisvogel', '--highlight-style', 'tango'])
             converted_files[self.Target_Name] = self.Destination_Name
         except subprocess.CalledProcessError:
             get_key_press(message=f'\n\n{self.Target_Name} failed to convert.\n\n    ENTER : continue converting files\n    ANY OTHER KEY : quit')
